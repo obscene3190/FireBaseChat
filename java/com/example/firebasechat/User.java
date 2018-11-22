@@ -13,46 +13,27 @@ public class User {
     private SecureRandom secureRandom_;
     static private int counter_ = 0;
     static private User mainAbonent_;
+    KeyPair pg;
 
     // AES
-    private String[] sessionPair_ = new String[2];
+    static private String[] sessionPair_ = new String[2];
 
     public User() {
         try {
-
-            // AES key generation
-            if(counter_ == 0) {
-                mainAbonent_ = this;
-                // Random strings
-
-                SecureRandom random = new SecureRandom();
-                char[] alphanum = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
-                char[][] strings = new char[2][16];
-                for(int str = 0; str < 2; ++str) {
-                    for (int i = 0; i < 16; ++i) {
-                        strings[str][i] = alphanum[random.nextInt(alphanum.length)];
-                    }
-                    sessionPair_[str] = new String(strings[str]);
-                }
-
-            }
-            else{
                 // RSA key generation
                 secureRandom_ = new SecureRandom(); // mb insert byte;
                 KeyPairGenerator keyGen = KeyPairGenerator.getInstance( "RSA" );
                 keyGen.initialize(2048, secureRandom_);
-                KeyPair pg = keyGen.genKeyPair();
+                pg = keyGen.genKeyPair();
                 Cipher cipher = Cipher.getInstance( "RSA" );
-
-                getSession(pg, cipher);
-            }
-            counter_++;
-
         }
         catch(Exception ex) {
             ex.printStackTrace();
         }
     }
+     public String get_public() {
+         return pg.getPublic().toString();
+     }
 
     public void setSessionPair_(String[] sessionPair_) {
         this.sessionPair_ = sessionPair_;
