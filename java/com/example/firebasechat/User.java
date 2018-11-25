@@ -14,7 +14,7 @@ import java.security.spec.X509EncodedKeySpec;
 
 public class User {
     public String userPubKeyEncStr;
-    private KeyAgreement userKeyAgree;
+    KeyPair userKpair;
     // AES
     static public String[] sessionPair_ = new String[2];
 
@@ -27,11 +27,13 @@ public class User {
                 SecureRandom secureRandom = new SecureRandom();
                 KeyPairGenerator userKpairGen = KeyPairGenerator.getInstance("DH");
                 userKpairGen.initialize(2048, secureRandom);
-                KeyPair userKpair = userKpairGen.generateKeyPair();
+                userKpair = userKpairGen.generateKeyPair();
 
                 // ЮЗЕР создаёт DH KeyAgreement объект (приватный ключ) и инвертирует публичный ключ в байты
-                userKeyAgree = KeyAgreement.getInstance("DH");
+                /*
+                KeyAgreement userKeyAgree = KeyAgreement.getInstance("DH");
                 userKeyAgree.init(userKpair.getPrivate());
+                */
                 // отправляем строку АДМИНу
                 byte[] userPubKeyEnc = userKpair.getPublic().getEncoded();
                 userPubKeyEncStr = Base64.encodeToString(userPubKeyEnc, Base64.DEFAULT);
@@ -55,6 +57,9 @@ public class User {
             byte[] cipherString1 = Base64.decode(result[1], Base64.DEFAULT);
             byte[] cipherString2 = Base64.decode(result[2], Base64.DEFAULT);
             byte[] encodedParams = Base64.decode(result[3], Base64.DEFAULT);
+
+            KeyAgreement userKeyAgree = KeyAgreement.getInstance("DH");
+            userKeyAgree.init(userKpair.getPrivate());
 
             // получает из байтов ключ АДМИНА и добавляет к общему секрету
             KeyFactory userKeyFac = KeyFactory.getInstance("DH");
