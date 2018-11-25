@@ -14,17 +14,13 @@ import java.security.spec.X509EncodedKeySpec;
 
 public class User {
 
-
-    private SecureRandom secureRandom_;
-    static private int counter_ = 0;
-    static private User mainAbonent_;
     KeyPair pg;
     public String userPubKeyEncStr;
     private KeyAgreement userKeyAgree;
 
 
     // AES
-    static public String[] sessionPair_ = new String[2];
+    public String[] sessionPair_ = new String[2];
 
     public User(int status) {
         if(status == 0) {
@@ -41,7 +37,6 @@ public class User {
                 // отправляем строку АДМИНу
                 byte[] userPubKeyEnc = userKpair.getPublic().getEncoded();
                 userPubKeyEncStr = Base64.encodeToString(userPubKeyEnc, Base64.DEFAULT);
-                userKeyAgree = KeyAgreement.getInstance("DH");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
