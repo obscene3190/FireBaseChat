@@ -60,7 +60,7 @@ public class ChatRoom extends AppCompatActivity  {
     EditText input;
 
     static User admin, current_user;
-    static String[] sessionPair_ = new String[2];
+    String[] sessionPair = new String[2];
 
 
     @Override
@@ -73,16 +73,16 @@ public class ChatRoom extends AppCompatActivity  {
         admin = new User(1);
 
         // For tests
-        sessionPair_[0] = "GzDshr7s34y1BrSL";
-        sessionPair_[1] = "NMHjxlleWpApdxD2";
-        admin.setSessionPair_(sessionPair_);
+        sessionPair[0] = "GzDshr7s34y1BrSL";
+        sessionPair[1] = "NMHjxlleWpApdxD2";
+        admin.setSessionPair(sessionPair);
         // ...
 
         // передача публичного ключа на сервер:
         pkeys.child("userPubKeyEncStr").setValue(current_user.userPubKeyEncStr);
         // ...
         // админ получает их и заливает зашифрованные сессионные ключи
-        pkeys.addValueEventListener(new ValueEventListener() {
+        pkeys.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String userPubKeyEncStr = dataSnapshot.child("userPubKeyEncStr").getValue(String.class);
@@ -92,6 +92,7 @@ public class ChatRoom extends AppCompatActivity  {
                 Admen.child("cipherString1").setValue(result[1]);
                 Admen.child("cipherString2").setValue(result[2]);
                 Admen.child("encodedParams").setValue(result[3]);
+                Listener();
             }
 
             @Override
@@ -100,43 +101,6 @@ public class ChatRoom extends AppCompatActivity  {
             }
         });
 
-        // ...
-        Admen.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                // осторожно, работает Юзер
-                String[] result = new String[4];
-                result[0] = dataSnapshot.child("adminPubKeyEnc").getValue(String.class);
-                result[1] = dataSnapshot.child("cipherString1").getValue(String.class);
-                result[2] = dataSnapshot.child("cipherString2").getValue(String.class);
-                result[3] = dataSnapshot.child("encodedParams").getValue(String.class);
-                // ...
-                current_user.EncryptSession(result);
-                pkeys.child("session1").setValue(current_user.sessionPair_[0]);
-                pkeys.child("session2").setValue(current_user.sessionPair_[1]);
-                displayChat();
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
         // ...
 
 
@@ -216,6 +180,30 @@ public class ChatRoom extends AppCompatActivity  {
             }
         };
         listMessages.setAdapter(adapter);
+    }
+
+    private void Listener() {
+        Admen.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // осторожно, работает Юзер
+                String[] result = new String[4];
+                result[0] = dataSnapshot.child("adminPubKeyEnc").getValue(String.class);
+                result[1] = dataSnapshot.child("cipherString1").getValue(String.class);
+                result[2] = dataSnapshot.child("cipherString2").getValue(String.class);
+                result[3] = dataSnapshot.child("encodedParams").getValue(String.class);
+                // ...
+                current_user.EncryptSession(result);
+                pkeys.child("session1").setValue(current_user.sessionPair_[0]);
+                pkeys.child("session2").setValue(current_user.sessionPair_[1]);
+                displayChat();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
