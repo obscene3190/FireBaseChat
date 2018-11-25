@@ -23,10 +23,10 @@ public class User {
     public User(int status) {
         if(status == 0) {
             try {
-                // ЮЗЕР создаёт ключ 2048 бит
+                // ЮЗЕР создаёт ключ 1024 бит
                 SecureRandom secureRandom = new SecureRandom();
                 KeyPairGenerator userKpairGen = KeyPairGenerator.getInstance("DH");
-                userKpairGen.initialize(2048, secureRandom);
+                userKpairGen.initialize(1024, secureRandom);
                 userKpair = userKpairGen.generateKeyPair();
 
                 // ЮЗЕР создаёт DH KeyAgreement объект (приватный ключ) и инвертирует публичный ключ в байты
