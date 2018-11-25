@@ -1,9 +1,14 @@
 package com.example.firebasechat;
+
+import android.util.Base64;
 import javax.crypto.*;
+import javax.crypto.interfaces.DHPublicKey;
+import javax.crypto.spec.DHParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
 import java.security.*;
-import android.util.Base64;
+import java.security.spec.X509EncodedKeySpec;
 
 //import org.apache.commons.codec.binary.Base64;
 
@@ -14,64 +19,115 @@ public class User {
     static private int counter_ = 0;
     static private User mainAbonent_;
     KeyPair pg;
+    public String userPubKeyEncStr;
+    private KeyAgreement userKeyAgree;
+
 
     // AES
-    static private String[] sessionPair_ = new String[2];
+    static public String[] sessionPair_ = new String[2];
 
-    public User() {
-        try {
-                // RSA key generation
-                secureRandom_ = new SecureRandom(); // mb insert byte;
-                KeyPairGenerator keyGen = KeyPairGenerator.getInstance( "RSA" );
-                keyGen.initialize(2048, secureRandom_);
-                pg = keyGen.genKeyPair();
-                Cipher cipher = Cipher.getInstance( "RSA" );
+    public User(int status) {
+        if(status == 0) {
+            try {
+                // ЮЗЕР создаёт ключ 2048 бит
+                SecureRandom secureRandom = new SecureRandom();
+                KeyPairGenerator userKpairGen = KeyPairGenerator.getInstance("DH");
+                userKpairGen.initialize(2048, secureRandom);
+                KeyPair userKpair = userKpairGen.generateKeyPair();
+
+                // ЮЗЕР создаёт DH KeyAgreement объект (приватный ключ) и инвертирует публичный ключ в байты
+                userKeyAgree = KeyAgreement.getInstance("DH");
+                userKeyAgree.init(userKpair.getPrivate());
+                // отправляем строку АДМИНу
+                byte[] userPubKeyEnc = userKpair.getPublic().getEncoded();
+                userPubKeyEncStr = Base64.encodeToString(userPubKeyEnc, Base64.DEFAULT);
+                userKeyAgree = KeyAgreement.getInstance("DH");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
-        catch(Exception ex) {
-            ex.printStackTrace();
-        }
+        else {}
     }
-     public String get_public() {
-         return pg.getPublic().toString();
-     }
 
     public void setSessionPair_(String[] sessionPair_) {
         this.sessionPair_ = sessionPair_;
     }
 
-    private void getSession(KeyPair pg, Cipher cipher) {
+    public void EncryptSession(String[] result) {
         try {
-            for(int i = 0; i < 2; ++i) {
-                sessionPair_[i] = new String(
-                        decryptRSA(
-                                mainAbonent_.encryptRSA(i, pg.getPublic(), cipher),
-                                pg.getPrivate(),
-                                cipher
-                        )
-                );
-            }
-        }
-        catch(Exception ex) {
-            ex.printStackTrace();
-        }
-    }
+            byte[] adminPubKeyEnc = Base64.decode(result[0], Base64.DEFAULT);
+            byte[] cipherString1 = Base64.decode(result[1], Base64.DEFAULT);
+            byte[] cipherString2 = Base64.decode(result[2], Base64.DEFAULT);
+            byte[] encodedParams = Base64.decode(result[3], Base64.DEFAULT);
 
-    // RSA methods
-    private byte[] encryptRSA(int elem, PublicKey openKey, Cipher cipher){
-        try {
-            cipher.init( Cipher.ENCRYPT_MODE, openKey );
-            return cipher.doFinal( sessionPair_[elem].getBytes("UTF-8") ); // or toString()
+            // получает из байтов ключ АДМИНА и добавляет к общему секрету
+            KeyFactory userKeyFac = KeyFactory.getInstance("DH");
+            X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(adminPubKeyEnc);
+            PublicKey adminPubKey = userKeyFac.generatePublic(x509KeySpec);
+
+            userKeyAgree.doPhase(adminPubKey, true);
+            byte[] userSharedSecret = userKeyAgree.generateSecret();
+
+            // формирует AES ключ
+            SecretKeySpec userAesKey = new SecretKeySpec(userSharedSecret, 0, 16, "AES");
+            // применяет параметры шифрования и свой AES ключ
+            AlgorithmParameters aesParams = AlgorithmParameters.getInstance("AES");
+            aesParams.init(encodedParams);
+            // создаёт шифр с полученными параметрами шифрования
+            Cipher userCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            userCipher.init(Cipher.DECRYPT_MODE, userAesKey, aesParams);
+
+            // расшифровавыет сессионную пару
+            sessionPair_[0] = new String(userCipher.doFinal(cipherString1));
+            sessionPair_[1] = new String(userCipher.doFinal(cipherString2));
         }
         catch (Exception ex) {
             ex.printStackTrace();
         }
-        return null;
     }
 
-    private String decryptRSA(byte[] secretMessage, PrivateKey secretKey, Cipher cipher){
+    public String[] DHGenerateAdmin(String userPubKeyEncStr) {
         try {
-            cipher.init( Cipher.DECRYPT_MODE, secretKey );
-            return new String(cipher.doFinal(secretMessage), "UTF-8");
+            // АДМИН из байтов АЛИСЫ формирует её публичный ключ
+            byte[] userPubKeyEnc = Base64.decode(userPubKeyEncStr, Base64.DEFAULT);
+            KeyFactory adminKeyFac = KeyFactory.getInstance("DH");
+            X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(userPubKeyEnc);
+            PublicKey userPubKey = adminKeyFac.generatePublic(x509KeySpec);
+
+            // АДМИН получает параметры ключа АЛИСЫ и на их основе создаёт пару собственных ключей
+            DHParameterSpec dhParamFromuserPubKey = ((DHPublicKey) userPubKey).getParams();
+            SecureRandom secureRandom = new SecureRandom();
+            KeyPairGenerator adminKpairGen = KeyPairGenerator.getInstance("DH");
+            adminKpairGen.initialize(dhParamFromuserPubKey, secureRandom);
+            KeyPair adminKpair = adminKpairGen.generateKeyPair();
+
+            // АДМИН создаёт DH KeyAgreement объект (приватный ключ) и инвертирует публичный ключ в байты
+            KeyAgreement adminKeyAgree = KeyAgreement.getInstance("DH");
+            adminKeyAgree.init(adminKpair.getPrivate());
+            byte[] adminPubKeyEnc = adminKpair.getPublic().getEncoded();
+            // добавляет ключ Алисы к общему секрету
+            adminKeyAgree.doPhase(userPubKey, true);
+            byte[] adminSharedSecret = adminKeyAgree.generateSecret();
+
+            // формирует AES ключ и шифрует им свой секретный ключ
+            SecretKeySpec adminAesKey = new SecretKeySpec(adminSharedSecret, 0, 16, "AES");
+            // создаёт шифр, применяет его и параметры шифрования
+            Cipher adminCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            adminCipher.init(Cipher.ENCRYPT_MODE, adminAesKey);
+
+            // нужно передать зашифрованный текст и параметры шифрования
+            byte[] cipherString1 = adminCipher.doFinal(sessionPair_[0].getBytes());
+            byte[] cipherString2 = adminCipher.doFinal(sessionPair_[1].getBytes());
+            byte[] encodedParams = adminCipher.getParameters().getEncoded();
+
+            // перегенерировать байты в текст и передать
+            String[] resultString = new String[4];
+            resultString[0] = Base64.encodeToString(adminPubKeyEnc, Base64.DEFAULT);
+            resultString[1] = Base64.encodeToString(cipherString1, Base64.DEFAULT);
+            resultString[2] = Base64.encodeToString(cipherString2, Base64.DEFAULT);
+            resultString[3] = Base64.encodeToString(encodedParams, Base64.DEFAULT);
+
+            return resultString;
         }
         catch (Exception ex) {
             ex.printStackTrace();
