@@ -13,14 +13,12 @@ import java.security.spec.X509EncodedKeySpec;
 //import org.apache.commons.codec.binary.Base64;
 
 public class User {
-
-    KeyPair pg;
     public String userPubKeyEncStr;
     private KeyAgreement userKeyAgree;
-
-
     // AES
-    public String[] sessionPair_ = new String[2];
+    static public String[] sessionPair_ = new String[2];
+
+    static public String[] sessionPair = new String[2];
 
     public User(int status) {
         if(status == 0) {
@@ -46,6 +44,9 @@ public class User {
 
     public void setSessionPair_(String[] sessionPair_) {
         this.sessionPair_ = sessionPair_;
+    }
+    public void setSessionPair(String[] sessionPair) {
+        this.sessionPair = sessionPair;
     }
 
     public void EncryptSession(String[] result) {
@@ -111,8 +112,8 @@ public class User {
             adminCipher.init(Cipher.ENCRYPT_MODE, adminAesKey);
 
             // нужно передать зашифрованный текст и параметры шифрования
-            byte[] cipherString1 = adminCipher.doFinal(sessionPair_[0].getBytes());
-            byte[] cipherString2 = adminCipher.doFinal(sessionPair_[1].getBytes());
+            byte[] cipherString1 = adminCipher.doFinal(sessionPair[0].getBytes());
+            byte[] cipherString2 = adminCipher.doFinal(sessionPair[1].getBytes());
             byte[] encodedParams = adminCipher.getParameters().getEncoded();
 
             // перегенерировать байты в текст и передать
