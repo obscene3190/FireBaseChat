@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(MainActivity.this, "Регистрация успешна", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(MainActivity.this,ChatRoom.class);
                     startActivity(intent);
+                    // надо бы сделать обмен ключами на этапе регистрации, чтобы пользователь не ждал 500 часов при заходе в чат...
                 }
                 else
                     Toast.makeText(MainActivity.this, "Регистрация провалена", Toast.LENGTH_SHORT).show();
