@@ -32,14 +32,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.security.spec.RSAPublicKeySpec;
 import java.util.ArrayList;
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.*;
-
-import org.apache.commons.codec.binary.Base64;
 
 
 
@@ -53,14 +53,13 @@ public class ChatRoom extends AppCompatActivity  {
     RelativeLayout activity_main;
 
     DatabaseReference Admen = FirebaseDatabase.getInstance().getReference("Admen");
-
     DatabaseReference messages = FirebaseDatabase.getInstance().getReference("messages");
     DatabaseReference pkeys = FirebaseDatabase.getInstance().getReference("Public_Key");
 
     Button button;
     EditText input;
 
-    static User current_user;
+    static User admin, current_user;
     static String[] sessionPair_ = new String[2];
 
 
@@ -70,23 +69,67 @@ public class ChatRoom extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
         activity_main = (RelativeLayout)findViewById(R.id.activity_main);
 
-        current_user = new User();
-        // передача публичного ключа на сервер:
-        //pkeys.push().setValue(current_user.get_public());
+        current_user = new User(0);
+        admin = new User(1);
+
+        // For tests
+        sessionPair_[0] = "GzDshr7s34y1BrSL";
+        sessionPair_[1] = "NMHjxlleWpApdxD2";
+        admin.setSessionPair_(sessionPair_);
         // ...
 
-        Admen.addValueEventListener(new ValueEventListener() {
+        // передача публичного ключа на сервер:
+        pkeys.child("userPubKeyEncStr").setValue(current_user.userPubKeyEncStr);
+        // ...
+        // админ получает их и заливает зашифрованные сессионные ключи
+        pkeys.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // получение зашифрованного админом сессионного ключа
-                sessionPair_[0] = dataSnapshot.child("sessionPair1").getValue(String.class);
-                sessionPair_[1] = dataSnapshot.child("sessionPair2").getValue(String.class);
-                // расшифровывание его...
-                // current_user.decryptRSA(...)...
+                String userPubKeyEncStr = dataSnapshot.child("userPubKeyEncStr").getValue(String.class);
+                // осторожно, работает Админ
+                String[] result = admin.DHGenerateAdmin(userPubKeyEncStr);
+                Admen.child("adminPubKeyEnc").setValue(result[0]);
+                Admen.child("cipherString1").setValue(result[1]);
+                Admen.child("cipherString2").setValue(result[2]);
+                Admen.child("encodedParams").setValue(result[3]);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        // ...
+        Admen.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                // осторожно, работает Юзер
+                String[] result = new String[4];
+                result[0] = dataSnapshot.child("adminPubKeyEnc").getValue(String.class);
+                result[1] = dataSnapshot.child("cipherString1").getValue(String.class);
+                result[2] = dataSnapshot.child("cipherString2").getValue(String.class);
+                result[3] = dataSnapshot.child("encodedParams").getValue(String.class);
                 // ...
-                // теперь эти ключи у пользователя
-                current_user.setSessionPair_(sessionPair_);
+                current_user.EncryptSession(result);
+                pkeys.child("session1").setValue(current_user.sessionPair_[0]);
+                pkeys.child("session2").setValue(current_user.sessionPair_[1]);
                 displayChat();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
             }
 
             @Override
@@ -95,6 +138,7 @@ public class ChatRoom extends AppCompatActivity  {
             }
         });
         // ...
+
 
         button = (Button)findViewById(R.id.button2);
         input = (EditText)findViewById(R.id.editText);
