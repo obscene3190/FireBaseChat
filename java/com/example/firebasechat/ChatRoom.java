@@ -55,16 +55,14 @@ public class ChatRoom extends AppCompatActivity  {
     DatabaseReference Admen = FirebaseDatabase.getInstance().getReference("Admen");
     DatabaseReference messages = FirebaseDatabase.getInstance().getReference("messages");
     DatabaseReference pkeys = FirebaseDatabase.getInstance().getReference("Public_Key");
-    DatabaseReference test = FirebaseDatabase.getInstance().getReference("test");
     DatabaseReference users = FirebaseDatabase.getInstance().getReference("Users");
 
     Button button;
     EditText input;
+    private FirebaseAuth mAuth;
 
     static User admin, current_user;
     String[] sessionPair = new String[2];
-
-    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,15 +70,60 @@ public class ChatRoom extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
         activity_main = (RelativeLayout)findViewById(R.id.activity_main);
 
-        current_user = new User(0);
+        //...
+        // ЧАСТЬ АДМИНА: постоянно контролит изменение данных в публичных ключах юзеров, если находит залитый ключ, то создает ячейку юзера
+        /*
         admin = new User(1);
-
-        // For tests
         sessionPair[0] = "GzDshr7s34y1BrSL";
         sessionPair[1] = "NMHjxlleWpApdxD2";
         admin.setSessionPair(sessionPair);
-        // ...
+        pkeys.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String userPubKeyEncStr = dataSnapshot.getValue(String.class);
+                String uid = dataSnapshot.getKey();
+                if ((dataSnapshot.child("userPubKeyEncStr").exists())) {
+                    // осторожно, работает Админ
+                    String[] result = admin.DHGenerateAdmin(userPubKeyEncStr);
+                    Admen.child(uid).child("adminPubKeyEnc").setValue(result[0]);
+                    Admen.child(uid).child("cipherString1").setValue(result[1]);
+                    Admen.child(uid).child("cipherString2").setValue(result[2]);
+                    Admen.child(uid).child("encodedParams").setValue(result[3]);
+                }
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });*/
+
+
+        // ЧАСТЬ ЮЗЕРА: просто берет ключи из своей ячейки
+        /*
+        current_user = new User(1);
+        users.child(mAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                sessionPair[0] = dataSnapshot.child("session1").getValue(String.class);
+                sessionPair[1] = dataSnapshot.child("session2").getValue(String.class);
+                current_user.setSessionPair(sessionPair);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });*/
+
+
+        // Для одного клиента
+        /*
+        current_user = new User(0);
+        admin = new User(1);
+        sessionPair[0] = "GzDshr7s34y1BrSL";
+        sessionPair[1] = "NMHjxlleWpApdxD2";
+        admin.setSessionPair(sessionPair);
         // передача публичного ключа на сервер:
         pkeys.child("userPubKeyEncStr").setValue(current_user.userPubKeyEncStr);
         // ...
@@ -106,43 +149,12 @@ public class ChatRoom extends AppCompatActivity  {
 
             }
         });
-
-        // ...
-        test.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Snackbar.make(activity_main, "Added", Snackbar.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Snackbar.make(activity_main, "Changing", Snackbar.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        // ...
+        */
 
         button = (Button)findViewById(R.id.button2);
-        input = (EditText)findViewById(R.id.editText);
-
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 String msg = input.getText().toString();
                 if(msg.equals("")) {
                     Toast.makeText(getApplicationContext(), "Input message", Toast.LENGTH_SHORT).show();
@@ -152,44 +164,14 @@ public class ChatRoom extends AppCompatActivity  {
                     Toast.makeText(getApplicationContext(), "Too long message", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 // Encrypt...
                 msg = current_user.encrypt(msg);
-                // ...
 
                 messages.push()
                         .setValue(new Message(msg,
                                 FirebaseAuth.getInstance().getCurrentUser().getEmail()));
 
                 input.setText("");
-            }
-        });
-        // ...
-        // ...
-        messages.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Snackbar.make(activity_main, "Новое сообщение", Snackbar.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Snackbar.make(activity_main, "Сообщение изменено", Snackbar.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
             }
         });
     }
