@@ -55,6 +55,8 @@ public class ChatRoom extends AppCompatActivity  {
     DatabaseReference Admen = FirebaseDatabase.getInstance().getReference("Admen");
     DatabaseReference messages = FirebaseDatabase.getInstance().getReference("messages");
     DatabaseReference pkeys = FirebaseDatabase.getInstance().getReference("Public_Key");
+    DatabaseReference test = FirebaseDatabase.getInstance().getReference("test");
+    DatabaseReference users = FirebaseDatabase.getInstance().getReference("Users");
 
     Button button;
     EditText input;
@@ -62,6 +64,7 @@ public class ChatRoom extends AppCompatActivity  {
     static User admin, current_user;
     String[] sessionPair = new String[2];
 
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,17 +85,20 @@ public class ChatRoom extends AppCompatActivity  {
         pkeys.child("userPubKeyEncStr").setValue(current_user.userPubKeyEncStr);
         // ...
         // админ получает их и заливает зашифрованные сессионные ключи
-        pkeys.addListenerForSingleValueEvent(new ValueEventListener() {
+        pkeys.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String userPubKeyEncStr = dataSnapshot.child("userPubKeyEncStr").getValue(String.class);
-                // осторожно, работает Админ
-                String[] result = admin.DHGenerateAdmin(userPubKeyEncStr);
-                Admen.child("adminPubKeyEnc").setValue(result[0]);
-                Admen.child("cipherString1").setValue(result[1]);
-                Admen.child("cipherString2").setValue(result[2]);
-                Admen.child("encodedParams").setValue(result[3]);
-                Listener();
+                if ((dataSnapshot.child("userPubKeyEncStr").exists())) {
+                    // осторожно, работает Админ
+                    String[] result = admin.DHGenerateAdmin(userPubKeyEncStr);
+                    Admen.child("adminPubKeyEnc").setValue(result[0]);
+                    Admen.child("cipherString1").setValue(result[1]);
+                    Admen.child("cipherString2").setValue(result[2]);
+                    Admen.child("encodedParams").setValue(result[3]);
+                    test.child("test").setValue("data was sent");
+                    Listener();
+                }
             }
 
             @Override
@@ -102,7 +108,33 @@ public class ChatRoom extends AppCompatActivity  {
         });
 
         // ...
+        test.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Snackbar.make(activity_main, "Added", Snackbar.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Snackbar.make(activity_main, "Changing", Snackbar.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        // ...
 
         button = (Button)findViewById(R.id.button2);
         input = (EditText)findViewById(R.id.editText);
@@ -132,6 +164,8 @@ public class ChatRoom extends AppCompatActivity  {
                 input.setText("");
             }
         });
+        // ...
+        // ...
         messages.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -140,7 +174,7 @@ public class ChatRoom extends AppCompatActivity  {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+                Snackbar.make(activity_main, "Сообщение изменено", Snackbar.LENGTH_SHORT).show();
             }
 
             @Override
@@ -194,8 +228,10 @@ public class ChatRoom extends AppCompatActivity  {
                 result[3] = dataSnapshot.child("encodedParams").getValue(String.class);
                 // ...
                 current_user.EncryptSession(result);
-                pkeys.child("session1").setValue(current_user.sessionPair_[0]);
-                pkeys.child("session2").setValue(current_user.sessionPair_[1]);
+                users.child(mAuth.getInstance().getCurrentUser().getUid()).child("session1").setValue(current_user.sessionPair_[0]);
+                users.child(mAuth.getInstance().getCurrentUser().getUid()).child("session2").setValue(current_user.sessionPair_[1]);
+                Admen.removeValue();
+                pkeys.removeValue();
                 displayChat();
             }
 
