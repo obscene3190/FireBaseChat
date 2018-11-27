@@ -82,7 +82,7 @@ public class ChatRoom extends AppCompatActivity  {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String userPubKeyEncStr = dataSnapshot.getValue(String.class);
                 String uid = dataSnapshot.getKey();
-                if ((dataSnapshot.child("userPubKeyEncStr").exists())) {
+                if (userPubKeyEncStr != null) {
                     // осторожно, работает Админ
                     String[] result = admin.DHGenerateAdmin(userPubKeyEncStr);
                     Admen.child(uid).child("adminPubKeyEnc").setValue(result[0]);
@@ -96,7 +96,8 @@ public class ChatRoom extends AppCompatActivity  {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });*/
+        });
+        displayChat();*/
 
 
         // ЧАСТЬ ЮЗЕРА: просто берет ключи из своей ячейки
@@ -108,6 +109,7 @@ public class ChatRoom extends AppCompatActivity  {
                 sessionPair[0] = dataSnapshot.child("session1").getValue(String.class);
                 sessionPair[1] = dataSnapshot.child("session2").getValue(String.class);
                 current_user.setSessionPair(sessionPair);
+                displayChat();
             }
 
             @Override
@@ -118,28 +120,28 @@ public class ChatRoom extends AppCompatActivity  {
 
 
         // Для одного клиента
-        /*
+
         current_user = new User(0);
+        pkeys.child("userPubKeyEncStr").setValue(current_user.userPubKeyEncStr);
         admin = new User(1);
         sessionPair[0] = "GzDshr7s34y1BrSL";
         sessionPair[1] = "NMHjxlleWpApdxD2";
         admin.setSessionPair(sessionPair);
         // передача публичного ключа на сервер:
-        pkeys.child("userPubKeyEncStr").setValue(current_user.userPubKeyEncStr);
+
         // ...
         // админ получает их и заливает зашифрованные сессионные ключи
         pkeys.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String userPubKeyEncStr = dataSnapshot.child("userPubKeyEncStr").getValue(String.class);
-                if ((dataSnapshot.child("userPubKeyEncStr").exists())) {
+                if (userPubKeyEncStr != null) {
                     // осторожно, работает Админ
                     String[] result = admin.DHGenerateAdmin(userPubKeyEncStr);
                     Admen.child("adminPubKeyEnc").setValue(result[0]);
                     Admen.child("cipherString1").setValue(result[1]);
                     Admen.child("cipherString2").setValue(result[2]);
                     Admen.child("encodedParams").setValue(result[3]);
-                    test.child("test").setValue("data was sent");
                     Listener();
                 }
             }
@@ -149,9 +151,10 @@ public class ChatRoom extends AppCompatActivity  {
 
             }
         });
-        */
+
 
         button = (Button)findViewById(R.id.button2);
+        input = (EditText) findViewById(R.id.editText);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -177,11 +180,10 @@ public class ChatRoom extends AppCompatActivity  {
     }
 
     private void displayChat() {
-        ListView listMessages = (ListView)findViewById(R.id.list_of_messages);
+        final ListView listMessages = (ListView)findViewById(R.id.list_of_messages);
         adapter = new FirebaseListAdapter<Message>(this, Message.class, R.layout.item, messages) {
             @Override
-            protected void populateView(View v, Message model, int position) {
-
+            protected void populateView(View v, Message model, final int position) {
                 TextView textMessage, author, timeMessage;
                 textMessage = (TextView)v.findViewById(R.id.tvMessage);
                 author = (TextView)v.findViewById(R.id.tvUser);
@@ -193,9 +195,16 @@ public class ChatRoom extends AppCompatActivity  {
                 author.setText(model.getAuthor());
                 textMessage.setText(msg);
                 timeMessage.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getTimeMessage()));
+                listMessages.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        listMessages.setSelection(position);
+                    }
+                });
             }
         };
         listMessages.setAdapter(adapter);
+
     }
 
     private void Listener() {
