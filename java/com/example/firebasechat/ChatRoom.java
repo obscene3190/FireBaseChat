@@ -72,24 +72,42 @@ public class ChatRoom extends AppCompatActivity  {
 
         //...
         // ЧАСТЬ АДМИНА: постоянно контролит изменение данных в публичных ключах юзеров, если находит залитый ключ, то создает ячейку юзера
-        /*
-        admin = new User(1);
+
+        current_user = new User(1);
         sessionPair[0] = "GzDshr7s34y1BrSL";
         sessionPair[1] = "NMHjxlleWpApdxD2";
-        admin.setSessionPair(sessionPair);
-        pkeys.addValueEventListener(new ValueEventListener() {
+        current_user.setSessionPair_(sessionPair);
+        current_user.setSessionPair(sessionPair);
+        displayChat();
+        pkeys.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String userPubKeyEncStr = dataSnapshot.getValue(String.class);
                 String uid = dataSnapshot.getKey();
                 if (userPubKeyEncStr != null) {
                     // осторожно, работает Админ
-                    String[] result = admin.DHGenerateAdmin(userPubKeyEncStr);
+                    String[] result = current_user.DHGenerateAdmin(userPubKeyEncStr);
                     Admen.child(uid).child("adminPubKeyEnc").setValue(result[0]);
                     Admen.child(uid).child("cipherString1").setValue(result[1]);
                     Admen.child(uid).child("cipherString2").setValue(result[2]);
                     Admen.child(uid).child("encodedParams").setValue(result[3]);
+                    pkeys.child(uid).removeValue();
                 }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
             }
 
             @Override
@@ -97,7 +115,7 @@ public class ChatRoom extends AppCompatActivity  {
 
             }
         });
-        displayChat();*/
+
 
 
         // ЧАСТЬ ЮЗЕРА: просто берет ключи из своей ячейки
@@ -116,11 +134,11 @@ public class ChatRoom extends AppCompatActivity  {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });*/
-
+        });
+        */
 
         // Для одного клиента
-
+        /*
         current_user = new User(0);
         pkeys.child("userPubKeyEncStr").setValue(current_user.userPubKeyEncStr);
         admin = new User(1);
@@ -151,7 +169,7 @@ public class ChatRoom extends AppCompatActivity  {
 
             }
         });
-
+        */
 
         button = (Button)findViewById(R.id.button2);
         input = (EditText) findViewById(R.id.editText);
