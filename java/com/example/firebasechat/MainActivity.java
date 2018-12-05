@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(MainActivity.this, "Регистрация успешна", Toast.LENGTH_SHORT).show();
                     //...
                     // Процесс регистрации для пользователя: он создает ключи, отправляет их и ждет
-                    /*
+
                     current_user = new User(0);
                     pkeys.child(mAuth.getInstance().getCurrentUser().getUid()).setValue(current_user.userPubKeyEncStr);
                     Toast.makeText(MainActivity.this, "Ключ отправлен, ожидайте ответа Администратора", Toast.LENGTH_SHORT).show();
@@ -116,9 +116,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 current_user.EncryptSession(result);
                                 users.child(mAuth.getInstance().getCurrentUser().getUid()).child("session1").setValue(current_user.sessionPair_[0]);
                                 users.child(mAuth.getInstance().getCurrentUser().getUid()).child("session2").setValue(current_user.sessionPair_[1]);
-                                Admen.removeValue();
-                                pkeys.removeValue();
+                                Admen.child(mAuth.getInstance().getCurrentUser().getUid()).removeValue();
+                                pkeys.child(mAuth.getInstance().getCurrentUser().getUid()).removeValue();
                                 Toast.makeText(MainActivity.this, "Ключ получен", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(MainActivity.this,ChatRoom.class);
+                                startActivity(intent);
                             }
                         }
 
@@ -127,10 +129,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         }
                     });
-                    */
+
                     //...
-                    Intent intent = new Intent(MainActivity.this,ChatRoom.class);
-                    startActivity(intent);
+
                 }
                 else
                     Toast.makeText(MainActivity.this, "Регистрация провалена", Toast.LENGTH_SHORT).show();
