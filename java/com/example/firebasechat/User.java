@@ -6,6 +6,7 @@ import javax.crypto.interfaces.DHPublicKey;
 import javax.crypto.spec.DHParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.security.spec.PKCS8EncodedKeySpec;
 
 import java.security.*;
 import java.security.spec.X509EncodedKeySpec;
@@ -13,14 +14,18 @@ import java.security.spec.X509EncodedKeySpec;
 //import org.apache.commons.codec.binary.Base64;
 
 public class User {
+    // все переменные
     public String userPubKeyEncStr;
+    public String userPrivateKeyEncStr;
     KeyPair userKpair;
     // AES
     static public String[] sessionPair_ = new String[2];
-
     static public String[] sessionPair = new String[2];
 
-    public User(int status) {
+    public User() {
+
+    }
+    void init(int status) {
         if(status == 0) {
             try {
                 // ЮЗЕР создаёт ключ 1024 бит
@@ -28,22 +33,18 @@ public class User {
                 KeyPairGenerator userKpairGen = KeyPairGenerator.getInstance("DH");
                 userKpairGen.initialize(1024, secureRandom);
                 userKpair = userKpairGen.generateKeyPair();
-
-                // ЮЗЕР создаёт DH KeyAgreement объект (приватный ключ) и инвертирует публичный ключ в байты
-                /*
-                KeyAgreement userKeyAgree = KeyAgreement.getInstance("DH");
-                userKeyAgree.init(userKpair.getPrivate());
-                */
-                // отправляем строку АДМИНу
+                // записываем ключи
                 byte[] userPubKeyEnc = userKpair.getPublic().getEncoded();
                 userPubKeyEncStr = Base64.encodeToString(userPubKeyEnc, Base64.DEFAULT);
+
+                byte[] userPrivateKeyEnc = userKpair.getPrivate().getEncoded();
+                userPrivateKeyEncStr = Base64.encodeToString(userPrivateKeyEnc, Base64.DEFAULT);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
         else {}
     }
-
     public void setSessionPair_(String[] sessionPair_) {
         this.sessionPair_ = sessionPair_;
     }
@@ -58,8 +59,14 @@ public class User {
             byte[] cipherString2 = Base64.decode(result[2], Base64.DEFAULT);
             byte[] encodedParams = Base64.decode(result[3], Base64.DEFAULT);
 
+            // Саня наговнякал, собираем приватный ключ из сохранённой на устройстве строки
+            KeyFactory myKeyFac = KeyFactory.getInstance("DH");
+            PKCS8EncodedKeySpec myPrivateSpec = new PKCS8EncodedKeySpec(Base64.decode(userPrivateKeyEncStr, Base64.DEFAULT));
+            PrivateKey userPrivateKeyEnc = myKeyFac.generatePrivate(myPrivateSpec);
+
             KeyAgreement userKeyAgree = KeyAgreement.getInstance("DH");
-            userKeyAgree.init(userKpair.getPrivate());
+            userKeyAgree.init(userPrivateKeyEnc);
+            //
 
             // получает из байтов ключ АДМИНА и добавляет к общему секрету
             KeyFactory userKeyFac = KeyFactory.getInstance("DH");
