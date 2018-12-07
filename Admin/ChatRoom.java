@@ -146,32 +146,6 @@ public class ChatRoom extends AppCompatActivity  {
         listMessages.setAdapter(adapter);
     }
 
-    private void Listener() {
-        Admen.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // осторожно, работает Юзер
-                String[] result = new String[4];
-                result[0] = dataSnapshot.child("adminPubKeyEnc").getValue(String.class);
-                result[1] = dataSnapshot.child("cipherString1").getValue(String.class);
-                result[2] = dataSnapshot.child("cipherString2").getValue(String.class);
-                result[3] = dataSnapshot.child("encodedParams").getValue(String.class);
-                // ...
-                current_user.EncryptSession(result);
-                users.child(mAuth.getInstance().getCurrentUser().getUid()).child("session1").setValue(current_user.sessionPair_[0]);
-                users.child(mAuth.getInstance().getCurrentUser().getUid()).child("session2").setValue(current_user.sessionPair_[1]);
-                Admen.removeValue();
-                pkeys.removeValue();
-                displayChat();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
