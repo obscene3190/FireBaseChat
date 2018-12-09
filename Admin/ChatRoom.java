@@ -61,7 +61,7 @@ public class ChatRoom extends AppCompatActivity  {
     EditText input;
     private FirebaseAuth mAuth;
 
-    static User current_user;
+    static User admin, current_user;
     String[] sessionPair = new String[2];
 
     @Override
@@ -72,24 +72,42 @@ public class ChatRoom extends AppCompatActivity  {
 
         //...
         // ЧАСТЬ АДМИНА: постоянно контролит изменение данных в публичных ключах юзеров, если находит залитый ключ, то создает ячейку юзера
-        
-        current_user = new User(1);
+
+        current_user = new User();
         sessionPair[0] = "GzDshr7s34y1BrSL";
         sessionPair[1] = "NMHjxlleWpApdxD2";
+        current_user.setSessionPair_(sessionPair);
         current_user.setSessionPair(sessionPair);
-        pkeys.addValueEventListener(new ValueEventListener() {
+        displayChat();
+        pkeys.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String userPubKeyEncStr = dataSnapshot.getValue(String.class);
                 String uid = dataSnapshot.getKey();
-                if ((dataSnapshot.child("userPubKeyEncStr").exists())) {
+                if (userPubKeyEncStr != null) {
                     // осторожно, работает Админ
                     String[] result = current_user.DHGenerateAdmin(userPubKeyEncStr);
                     Admen.child(uid).child("adminPubKeyEnc").setValue(result[0]);
                     Admen.child(uid).child("cipherString1").setValue(result[1]);
                     Admen.child(uid).child("cipherString2").setValue(result[2]);
                     Admen.child(uid).child("encodedParams").setValue(result[3]);
+                    pkeys.child(uid).removeValue();
                 }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
             }
 
             @Override
@@ -98,8 +116,8 @@ public class ChatRoom extends AppCompatActivity  {
             }
         });
 
-
         button = (Button)findViewById(R.id.button2);
+        input = (EditText) findViewById(R.id.editText);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,11 +143,10 @@ public class ChatRoom extends AppCompatActivity  {
     }
 
     private void displayChat() {
-        ListView listMessages = (ListView)findViewById(R.id.list_of_messages);
+        final ListView listMessages = (ListView)findViewById(R.id.list_of_messages);
         adapter = new FirebaseListAdapter<Message>(this, Message.class, R.layout.item, messages) {
             @Override
-            protected void populateView(View v, Message model, int position) {
-
+            protected void populateView(View v, Message model, final int position) {
                 TextView textMessage, author, timeMessage;
                 textMessage = (TextView)v.findViewById(R.id.tvMessage);
                 author = (TextView)v.findViewById(R.id.tvUser);
@@ -141,9 +158,16 @@ public class ChatRoom extends AppCompatActivity  {
                 author.setText(model.getAuthor());
                 textMessage.setText(msg);
                 timeMessage.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getTimeMessage()));
+                listMessages.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        listMessages.setSelection(position);
+                    }
+                });
             }
         };
         listMessages.setAdapter(adapter);
+
     }
 
     @Override
