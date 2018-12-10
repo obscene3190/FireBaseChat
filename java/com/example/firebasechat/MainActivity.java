@@ -247,9 +247,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if( publicKey.equals("") || privateKey.equals("") ) {
             Toast.makeText(MainActivity.this, "Aвторизация успешна", Toast.LENGTH_SHORT).show();
+            instructions.setVisibility(View.VISIBLE);
             sessionPair[0] = sPref.getString("Key1", "");
             sessionPair[1] = sPref.getString("Key2", "");
             if (sessionPair[0].equals("") || sessionPair[1].equals("")) {
+                instructions.setVisibility(View.VISIBLE);
                 Toast.makeText(MainActivity.this, "На данном устройстве нет ключей, создание...", Toast.LENGTH_SHORT).show();
                 reregistration();
             }
