@@ -11,20 +11,33 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.*;
 import java.security.spec.X509EncodedKeySpec;
 
-//import org.apache.commons.codec.binary.Base64;
-
+/**
+ * \brief Класс пользователя
+ * Класс пользоваателя выполняет основные функции, необходимые для обмена ключами между пользователем и администратором,
+ * а также функции шифрования и расшифрования сообщения
+ * Со стороны пользователя генерируется пара ключей, а после обрабатываются данные, полученные от администратора
+ * Со стороны администратора обрабатываются данные, полученные пользователем
+ */
 public class User {
-    // все переменные
-    public String userPubKeyEncStr;
-    public String userPrivateKeyEncStr;
-    KeyPair userKpair;
-    // AES
-    static public String[] sessionPair_ = new String[2];
-    static public String[] sessionPair = new String[2];
+    private String userPubKeyEncStr; ///< Публичный ключ пользователя
+    private String userPrivateKeyEncStr; ///< Приватный ключ пользователя
+    KeyPair userKpair; ///< Пара ключей пользователя
 
+    // AES
+    static public String[] sessionPair_ = new String[2]; ///< Сессионная пара ключей
+
+    /**
+     * Конструктор класса User
+     */
     public User() {
 
     }
+
+    /**
+     * /brief Инициализация пользователя
+     * Функция инициализации пользователя, в зависимости от аргумента функции. Если status 1, то пользователь уже имеет сесионные ключи и ему не надо генерировать ключи для обмена, в противном случае генерируются ключи для обмена
+     * \param status показывает, есть ли у пользователя ключи, или их необходимо сгенерировать
+     */
     void init(int status) {
         if(status == 0) {
             try {
@@ -45,13 +58,52 @@ public class User {
         }
         else {}
     }
+
+    /**
+     * /brief Установка сессионных ключей
+     * \param sessionPair_ сессионная пара
+     */
     public void setSessionPair_(String[] sessionPair_) {
         this.sessionPair_ = sessionPair_;
     }
-    public void setSessionPair(String[] sessionPair) {
-        this.sessionPair = sessionPair;
+
+    /**
+     * \brief Getter для публичного ключа
+     * \return Публичный ключ
+     */
+    public String getUserPubKeyEncStr() {
+        return userPubKeyEncStr;
     }
 
+    /**
+     * \brief Getter для приватного ключа
+     * \return Приватный ключ
+     */
+    public String getUserPrivateKeyEncStr() {
+        return userPrivateKeyEncStr;
+    }
+
+    /**
+     * \brief Setter для публичного ключа
+     * \param userPubKeyEncStr Публичный ключ
+     */
+    public void setUserPubKeyEncStr(String userPubKeyEncStr) {
+        this.userPubKeyEncStr = userPubKeyEncStr;
+    }
+
+    /**
+     * \brief Setter для приватного ключа
+     * \param userPrivateKeyEncStr Приватный ключ
+     */
+    public void setUserPrivateKeyEncStr(String userPrivateKeyEncStr) {
+        this.userPrivateKeyEncStr = userPrivateKeyEncStr;
+    }
+
+    /**
+     * \brief Функкция обрабоки пользователем данных, полученных от администратора
+     * Пользователь получает данные администратора, генерирует общий секрет и получаает сессионные ключи
+     * \param result Данные, который пользователь получает от администратора
+     */
     public void EncryptSession(String[] result) {
         try {
             byte[] adminPubKeyEnc = Base64.decode(result[0], Base64.DEFAULT);
@@ -94,6 +146,11 @@ public class User {
         }
     }
 
+    /**
+     * \brief Функция Администратора, где обрабатывается публичный клч пользователя и создаются необходимые ключи
+     * \param userPubKeyEncStr Публичный ключ пользователя
+     * \param[out] Результат обрабоки данных пользователя
+     */
     public String[] DHGenerateAdmin(String userPubKeyEncStr) {
         try {
             // АДМИН из байтов АЛИСЫ формирует её публичный ключ
@@ -124,8 +181,8 @@ public class User {
             adminCipher.init(Cipher.ENCRYPT_MODE, adminAesKey);
 
             // нужно передать зашифрованный текст и параметры шифрования
-            byte[] cipherString1 = adminCipher.doFinal(sessionPair[0].getBytes());
-            byte[] cipherString2 = adminCipher.doFinal(sessionPair[1].getBytes());
+            byte[] cipherString1 = adminCipher.doFinal(sessionPair_[0].getBytes());
+            byte[] cipherString2 = adminCipher.doFinal(sessionPair_[1].getBytes());
             byte[] encodedParams = adminCipher.getParameters().getEncoded();
 
             // перегенерировать байты в текст и передать
@@ -144,6 +201,12 @@ public class User {
     }
 
     // AES methods
+
+    /**
+     * \brief Функция шифрования сообщения
+     * \param value Сообщение
+     * \param[out] Зашифрованное сообщение
+     */
     public String encrypt(String value) {
         try {
             IvParameterSpec iv = new IvParameterSpec(sessionPair_[1].getBytes("UTF-8"));
@@ -160,6 +223,11 @@ public class User {
         return null;
     }
 
+    /**
+     * \brief Функция расшифровывает сообщения с сервера
+     * \param encrypted Зашифрованное сообщение
+     * \param[out] Расшифрованное сообщение
+     */
     public String decrypt(String encrypted) {
         try {
             IvParameterSpec iv = new IvParameterSpec(sessionPair_[1].getBytes("UTF-8"));
