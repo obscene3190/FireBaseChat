@@ -26,7 +26,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.security.spec.KeySpec;
 import java.util.concurrent.TimeUnit;
+import android.util.Base64;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  *  \brief Activity регистрации и авторизации
@@ -189,17 +199,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void admin_auth(String password) {
         sPref = getSharedPreferences(mAuth.getInstance().getCurrentUser().getUid(), MODE_PRIVATE);
 
-        String iv = "";
-        String key1 = "zNaazqRWLcI9xEhB2c1A14z7iC8g5qJ8e621p/Maqvw=";
-        String key2 = "kNELl1znJ0EMVY4LU99fXeNCufW2EwEJT4Y9gmAdTD8";
-        SharedPreferences.Editor ed = sPref.edit();
-        // с помощью пароля идет расшифровка ключей
-        ed.putString("Key1", "key1");
-        ed.putString("Key2", "key2");
-        ed.commit();
+        String key1 = "o+zofOtfuHy30yxh2RrQCmYK9zBhCgmI2xunY3O125g=";
+        String key2 = "6/49IwryEuWhFhJNmoK9wrvSYlqMY3h+nnqKsss3hY0=";
+        String Iv = "9j2QR73Hsmfto5w+mfTFJA==";
 
-        Intent intent = new Intent(MainActivity.this, ChatRoom.class);
-        startActivity(intent);
+        // с помощью пароля идет расшифровка ключей
+        try {
+            String[] sessionPair = {key1, key2};
+            byte[] salt = Base64.decode("0Gh6Tbnxf4o=", Base64.DEFAULT);
+            byte[] iv = Base64.decode(Iv, Base64.DEFAULT);
+
+            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+            KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 10000, 128);
+            SecretKey tmp = factory.generateSecret(spec);
+
+            SecretKeySpec skey = new SecretKeySpec(tmp.getEncoded(), "AES");
+            IvParameterSpec ivspec = new IvParameterSpec(iv);
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            cipher.init(Cipher.DECRYPT_MODE, skey, ivspec);
+
+            byte[] encrypted1 = cipher.doFinal(Base64.decode(sessionPair[0], Base64.DEFAULT));// SesP
+            byte[] encrypted2 = cipher.doFinal(Base64.decode(sessionPair[1], Base64.DEFAULT));//SesP
+            SharedPreferences.Editor ed = sPref.edit();
+
+            String Key1 = Base64.encodeToString(encrypted1, Base64.DEFAULT).substring(0, 16);
+            String Key2 = Base64.encodeToString(encrypted2, Base64.DEFAULT).substring(0, 16);
+            ed.putString("Key1", Key1);
+            ed.putString("Key2", Key2);
+            ed.commit();
+            Intent intent = new Intent(MainActivity.this, ChatRoom.class);
+            startActivity(intent);
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -207,14 +241,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     public void user_auth() {
         sPref = getSharedPreferences(mAuth.getInstance().getCurrentUser().getUid(), MODE_PRIVATE);
-        sessionPair[0] = sPref.getString("Key1", "");
-        sessionPair[1] = sPref.getString("Key2", "");
 
-        Toast.makeText(MainActivity.this, "Aвторизация успешна", Toast.LENGTH_SHORT).show();
+        String publicKey = sPref.getString("Public_Key", "");
+        String privateKey = sPref.getString("Private_Key", "");
 
-        if (sessionPair[0].equals("") || sessionPair[1].equals("")) {
-            Toast.makeText(MainActivity.this, "На данном устройстве нет ключей, создание...", Toast.LENGTH_SHORT).show();
-            reregistration();
+        if( publicKey.equals("") || privateKey.equals("") ) {
+            Toast.makeText(MainActivity.this, "Aвторизация успешна", Toast.LENGTH_SHORT).show();
+            sessionPair[0] = sPref.getString("Key1", "");
+            sessionPair[1] = sPref.getString("Key2", "");
+            if (sessionPair[0].equals("") || sessionPair[1].equals("")) {
+                Toast.makeText(MainActivity.this, "На данном устройстве нет ключей, создание...", Toast.LENGTH_SHORT).show();
+                reregistration();
+            }
+            else {
+                Intent intent = new Intent(MainActivity.this, ChatRoom.class);
+                startActivity(intent);
+            }
         }
 
         Intent intent = new Intent(MainActivity.this, ChatRoom.class);
