@@ -2,7 +2,7 @@
 
 ## Ссылка на скачиваение последней версии
 
-https://yadi.sk/d/F3gSKdcZ9rmRzg
+https://yadi.sk/d/-IwRDDvIlvmurw
 
 ## Интерфейс/реализация отдельных компонентов
 
