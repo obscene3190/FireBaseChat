@@ -75,7 +75,7 @@ public class ChatRoom extends AppCompatActivity  {
         sPref = getSharedPreferences(mAuth.getInstance().getCurrentUser().getUid(), MODE_PRIVATE);
         sessionPair[0] = sPref.getString("Key1", "");
         sessionPair[1] = sPref.getString("Key2", "");
-        if(mAuth.getInstance().getCurrentUser().getUid().equals("VcEIBTcgoud7zrmK2UAbsmCWYvo2")) {
+        if(mAuth.getInstance().getCurrentUser().getEmail().equals("starkiller44@yandex.ru")) {
             current_user.setSessionPair_(sessionPair);
             displayChat();
             Admin_actrivity();

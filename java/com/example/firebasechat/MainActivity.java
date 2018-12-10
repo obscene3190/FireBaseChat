@@ -199,17 +199,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void admin_auth(String password) {
         sPref = getSharedPreferences(mAuth.getInstance().getCurrentUser().getUid(), MODE_PRIVATE);
 
-        String key1 = "o+zofOtfuHy30yxh2RrQCmYK9zBhCgmI2xunY3O125g=";
-        String key2 = "6/49IwryEuWhFhJNmoK9wrvSYlqMY3h+nnqKsss3hY0=";
+        String key1 = "gKiQ6Su+j6aUKPPHWOkBrQ==";
+        String key2 = "7zv5LNrcOvVQxgFgdOPDuw==";
         String Iv = "9j2QR73Hsmfto5w+mfTFJA==";
 
         // с помощью пароля идет расшифровка ключей
         try {
             String[] sessionPair = {key1, key2};
-            byte[] salt = Base64.decode("0Gh6Tbnxf4o=", Base64.DEFAULT);
             byte[] iv = Base64.decode(Iv, Base64.DEFAULT);
+            byte[] salt = Base64.decode("0Gh6Tbnxf4oWer==", Base64.DEFAULT);
 
-            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 10000, 128);
             SecretKey tmp = factory.generateSecret(spec);
 
@@ -233,7 +233,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         catch (Exception ex) {
             ex.printStackTrace();
+            Toast.makeText(MainActivity.this, "Ошибка входа Администратора", Toast.LENGTH_SHORT).show();
+            return;
         }
+
     }
 
     /**
