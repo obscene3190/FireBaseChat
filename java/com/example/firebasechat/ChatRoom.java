@@ -1,6 +1,7 @@
 package com.example.firebasechat;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -41,28 +42,26 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.*;
 
-
-
+/**
+ * \brief Данное Activity представляет собой комнату обмена зашифрованными сообщениями
+ */
 public class ChatRoom extends AppCompatActivity  {
-    ArrayList<Message> messages_list = new ArrayList<>();
-    ArrayList<User> users_list = new ArrayList<>();
-    ArrayList<String> keys = new ArrayList<>();
-    private static int SIGN_IN_REQUEST_CODE = 1;
-    private static int MAX_MESSAGE_LENGTH = 150;
-    private FirebaseListAdapter<Message> adapter;
+    private static int MAX_MESSAGE_LENGTH = 300; ///< Максимальная длина сообщения
+    private FirebaseListAdapter<Message> adapter; ///< Адаптер для отображения сообщений с сервера
     RelativeLayout activity_main;
 
-    DatabaseReference Admen = FirebaseDatabase.getInstance().getReference("Admen");
-    DatabaseReference messages = FirebaseDatabase.getInstance().getReference("messages");
-    DatabaseReference pkeys = FirebaseDatabase.getInstance().getReference("Public_Key");
-    DatabaseReference users = FirebaseDatabase.getInstance().getReference("Users");
+    DatabaseReference Admen = FirebaseDatabase.getInstance().getReference("Admen"); ///< База данных с обработанными Администратором публичными ключами пользователей
+    DatabaseReference messages = FirebaseDatabase.getInstance().getReference("messages"); ///< База данных с сообщениям пользователей
+    DatabaseReference pkeys = FirebaseDatabase.getInstance().getReference("Public_Key"); ///< Базад данных публичных ключей
 
-    Button button;
-    EditText input;
+    SharedPreferences sPref; ///<  Локальная база данных для хранения ключей пользователя
+
+    Button button; ///< Кнопка отправки сообщения
+    EditText input; ///< Поле ввода сообщения
     private FirebaseAuth mAuth;
 
-    static User admin, current_user;
-    String[] sessionPair = new String[2];
+    static User current_user;
+    String[] sessionPair = new String[2]; ///< Сессионная пара
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,15 +69,139 @@ public class ChatRoom extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
         activity_main = (RelativeLayout)findViewById(R.id.activity_main);
 
-        //...
-        // ЧАСТЬ АДМИНА: постоянно контролит изменение данных в публичных ключах юзеров, если находит залитый ключ, то создает ячейку юзера
+        button = (Button)findViewById(R.id.button2);
+        input = (EditText) findViewById(R.id.editText);
+        current_user = new User();
+        sPref = getSharedPreferences(mAuth.getInstance().getCurrentUser().getUid(), MODE_PRIVATE);
+        sessionPair[0] = sPref.getString("Key1", "");
+        sessionPair[1] = sPref.getString("Key2", "");
+        if(mAuth.getInstance().getCurrentUser().getUid().equals("VcEIBTcgoud7zrmK2UAbsmCWYvo2")) {
+            current_user.setSessionPair_(sessionPair);
+            displayChat();
+            Admin_actrivity();
+        }
+        else {
+            if (sessionPair[0].equals("") || sessionPair[1].equals("")) {
+                get_keys();
+            } else {
+                current_user.setSessionPair_(sessionPair);
+                button.setEnabled(true);
+                displayChat();
+            }
+        }
 
-        current_user = new User(1);
-        sessionPair[0] = "GzDshr7s34y1BrSL";
-        sessionPair[1] = "NMHjxlleWpApdxD2";
-        current_user.setSessionPair_(sessionPair);
-        current_user.setSessionPair(sessionPair);
-        displayChat();
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String msg = input.getText().toString();
+                if(msg.equals("")) {
+                    Toast.makeText(getApplicationContext(), "Введите сообщение", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(msg.length() > MAX_MESSAGE_LENGTH) {
+                    Toast.makeText(getApplicationContext(), "Слишком длинное сообщение", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                // Encrypt...
+                msg = current_user.encrypt(msg);
+
+                messages.push()
+                        .setValue(new Message(msg,
+                                FirebaseAuth.getInstance().getCurrentUser().getEmail()));
+
+                input.setText("");
+            }
+        });
+    }
+
+    /**
+     * \brief Функция отображения сообщений
+     * Данная функция обращается к базе данных сообщений пользователей и, используя специальный адаптер, отображает их
+     */
+    private void displayChat() {
+        final ListView listMessages = (ListView)findViewById(R.id.list_of_messages);
+        adapter = new FirebaseListAdapter<Message>(this, Message.class, R.layout.item, messages) {
+            @Override
+            protected void populateView(View v, Message model, final int position) {
+                TextView textMessage, author, timeMessage;
+
+                textMessage = (TextView)v.findViewById(R.id.tvMessage);
+                author = (TextView)v.findViewById(R.id.tvUser);
+                timeMessage = (TextView)v.findViewById(R.id.tvDate);
+
+                String msg = model.getTextMessage();
+                // Decrypt...
+                msg = current_user.decrypt(msg);
+                // ...
+                author.setText(model.getAuthor());
+                textMessage.setText(msg);
+                timeMessage.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getTimeMessage()));
+                listMessages.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        listMessages.setSelection(position);
+                    }
+                });
+            }
+        };
+        listMessages.setAdapter(adapter);
+
+    }
+
+    /**
+     * \brief Данная функция предназначена для получения ключей
+     */
+    public void get_keys() {
+        sPref = getSharedPreferences(mAuth.getInstance().getCurrentUser().getUid(), MODE_PRIVATE);
+
+        current_user.setUserPubKeyEncStr(sPref.getString("Public_Key", ""));
+        current_user.setUserPrivateKeyEncStr(sPref.getString("Private_Key", ""));
+
+        if(current_user.getUserPubKeyEncStr() == "" || current_user.getUserPrivateKeyEncStr() == "") {
+            Toast.makeText(ChatRoom.this, "Ключи не сгенерированы.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Toast.makeText(ChatRoom.this, "Ожидайте ответа Администратора", Toast.LENGTH_SHORT).show();
+        Admen.child(mAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String[] result = new String[4];
+                result[0] = dataSnapshot.child("adminPubKeyEnc").getValue(String.class);
+                result[1] = dataSnapshot.child("cipherString1").getValue(String.class);
+                result[2] = dataSnapshot.child("cipherString2").getValue(String.class);
+                result[3] = dataSnapshot.child("encodedParams").getValue(String.class);
+                if ((result[0] != null) && (result[1] != null)
+                        && (result[2] != null) && (result[3] != null)) {
+                    // Юзер обрабатывает данные Администратора
+                    current_user.EncryptSession(result);
+
+                    // Записываем ключи на устройство
+                    SharedPreferences.Editor ed = sPref.edit();
+
+                    ed.putString("Key1", current_user.sessionPair_[0]);
+                    ed.putString("Key2", current_user.sessionPair_[1]);
+                    ed.commit();
+
+                    Admen.child(mAuth.getInstance().getCurrentUser().getUid()).removeValue();
+                    Toast.makeText(ChatRoom.this, "Ключ получен", Toast.LENGTH_SHORT).show();
+                    button.setEnabled(true);
+                    displayChat();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    /**
+     * \brief Данная функция предназначена для обработки публичных ключей администатором
+     */
+    private void Admin_actrivity() {
         pkeys.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -108,140 +231,6 @@ public class ChatRoom extends AppCompatActivity  {
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-
-        // ЧАСТЬ ЮЗЕРА: просто берет ключи из своей ячейки
-        /*
-        current_user = new User(1);
-        users.child(mAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                sessionPair[0] = dataSnapshot.child("session1").getValue(String.class);
-                sessionPair[1] = dataSnapshot.child("session2").getValue(String.class);
-                current_user.setSessionPair(sessionPair);
-                displayChat();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        */
-
-        // Для одного клиента
-        /*
-        current_user = new User(0);
-        pkeys.child("userPubKeyEncStr").setValue(current_user.userPubKeyEncStr);
-        admin = new User(1);
-        sessionPair[0] = "GzDshr7s34y1BrSL";
-        sessionPair[1] = "NMHjxlleWpApdxD2";
-        admin.setSessionPair(sessionPair);
-        // передача публичного ключа на сервер:
-
-        // ...
-        // админ получает их и заливает зашифрованные сессионные ключи
-        pkeys.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String userPubKeyEncStr = dataSnapshot.child("userPubKeyEncStr").getValue(String.class);
-                if (userPubKeyEncStr != null) {
-                    // осторожно, работает Админ
-                    String[] result = admin.DHGenerateAdmin(userPubKeyEncStr);
-                    Admen.child("adminPubKeyEnc").setValue(result[0]);
-                    Admen.child("cipherString1").setValue(result[1]);
-                    Admen.child("cipherString2").setValue(result[2]);
-                    Admen.child("encodedParams").setValue(result[3]);
-                    Listener();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        */
-
-        button = (Button)findViewById(R.id.button2);
-        input = (EditText) findViewById(R.id.editText);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String msg = input.getText().toString();
-                if(msg.equals("")) {
-                    Toast.makeText(getApplicationContext(), "Input message", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if(msg.length() > MAX_MESSAGE_LENGTH) {
-                    Toast.makeText(getApplicationContext(), "Too long message", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                // Encrypt...
-                msg = current_user.encrypt(msg);
-
-                messages.push()
-                        .setValue(new Message(msg,
-                                FirebaseAuth.getInstance().getCurrentUser().getEmail()));
-
-                input.setText("");
-            }
-        });
-    }
-
-    private void displayChat() {
-        final ListView listMessages = (ListView)findViewById(R.id.list_of_messages);
-        adapter = new FirebaseListAdapter<Message>(this, Message.class, R.layout.item, messages) {
-            @Override
-            protected void populateView(View v, Message model, final int position) {
-                TextView textMessage, author, timeMessage;
-                textMessage = (TextView)v.findViewById(R.id.tvMessage);
-                author = (TextView)v.findViewById(R.id.tvUser);
-                timeMessage = (TextView)v.findViewById(R.id.tvDate);
-                String msg = model.getTextMessage();
-                // Decrypt...
-                msg = current_user.decrypt(msg);
-                // ...
-                author.setText(model.getAuthor());
-                textMessage.setText(msg);
-                timeMessage.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getTimeMessage()));
-                listMessages.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        listMessages.setSelection(position);
-                    }
-                });
-            }
-        };
-        listMessages.setAdapter(adapter);
-
-    }
-
-    private void Listener() {
-        Admen.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // осторожно, работает Юзер
-                String[] result = new String[4];
-                result[0] = dataSnapshot.child("adminPubKeyEnc").getValue(String.class);
-                result[1] = dataSnapshot.child("cipherString1").getValue(String.class);
-                result[2] = dataSnapshot.child("cipherString2").getValue(String.class);
-                result[3] = dataSnapshot.child("encodedParams").getValue(String.class);
-                // ...
-                current_user.EncryptSession(result);
-                users.child(mAuth.getInstance().getCurrentUser().getUid()).child("session1").setValue(current_user.sessionPair_[0]);
-                users.child(mAuth.getInstance().getCurrentUser().getUid()).child("session2").setValue(current_user.sessionPair_[1]);
-                Admen.removeValue();
-                pkeys.removeValue();
-                displayChat();
             }
 
             @Override
