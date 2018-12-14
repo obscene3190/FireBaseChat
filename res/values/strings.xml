@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">NedoChat</string>
-    <string name="layout_name">Room</string>
     <string name="about_text">
-    При успешной регистрации начнется генерация Ваших индивидуальных ключей, это может занять некоторое время.\nНе пугайтесь, если будет казаться, что телефон подвис.</string>
-    <string name="about_title">О программе</string>
+    У лукоморья дуб зелёный;\n
+    Златая цепь на дубе том:\n
+    И днём и ночью <b>кот учёный</b>\n
+    Всё ходит по цепи кругом;\n
+    Идёт <b>направо</b> - песнь заводит,\n
+    <b>Налево</b> - сказку говорит.</string>
+    <string name="about_title">Комната чата</string>
 </resources>
