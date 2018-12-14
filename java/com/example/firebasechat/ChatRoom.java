@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -48,6 +51,10 @@ import java.security.*;
 public class ChatRoom extends AppCompatActivity  {
     private static int MAX_MESSAGE_LENGTH = 300; ///< Максимальная длина сообщения
     private FirebaseListAdapter<Message> adapter; ///< Адаптер для отображения сообщений с сервера
+    //private FirebaseRecyclerAdapter<Message> adapter2;
+
+    static User current_user;
+
     RelativeLayout activity_main;
 
     DatabaseReference Admen = FirebaseDatabase.getInstance().getReference("Admen"); ///< База данных с обработанными Администратором публичными ключами пользователей
@@ -60,7 +67,6 @@ public class ChatRoom extends AppCompatActivity  {
     EditText input; ///< Поле ввода сообщения
     private FirebaseAuth mAuth;
 
-    static User current_user;
     String[] sessionPair = new String[2]; ///< Сессионная пара
 
     @Override
@@ -69,14 +75,19 @@ public class ChatRoom extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
         activity_main = (RelativeLayout)findViewById(R.id.activity_main);
 
-        button = (Button)findViewById(R.id.button2);
+        button = (Button)findViewById(R.id.Send);
+        button.setEnabled(false);
         input = (EditText) findViewById(R.id.editText);
         current_user = new User();
+
+        // Получаем ключи из локальной базы данных
         sPref = getSharedPreferences(mAuth.getInstance().getCurrentUser().getUid(), MODE_PRIVATE);
         sessionPair[0] = sPref.getString("Key1", "");
         sessionPair[1] = sPref.getString("Key2", "");
+
         if(mAuth.getInstance().getCurrentUser().getEmail().equals("starkiller44@yandex.ru")) {
             current_user.setSessionPair_(sessionPair);
+            button.setEnabled(true);
             displayChat();
             Admin_actrivity();
         }
@@ -102,24 +113,23 @@ public class ChatRoom extends AppCompatActivity  {
                     Toast.makeText(getApplicationContext(), "Слишком длинное сообщение", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                // Encrypt...
                 msg = current_user.encrypt(msg);
-
                 messages.push()
                         .setValue(new Message(msg,
                                 FirebaseAuth.getInstance().getCurrentUser().getEmail()));
-
                 input.setText("");
             }
         });
     }
 
     /**
-     * \brief Функция отображения сообщений
+     * @brief Функция отображения сообщений
      * Данная функция обращается к базе данных сообщений пользователей и, используя специальный адаптер, отображает их
      */
     private void displayChat() {
+
         final ListView listMessages = (ListView)findViewById(R.id.list_of_messages);
+
         adapter = new FirebaseListAdapter<Message>(this, Message.class, R.layout.item, messages) {
             @Override
             protected void populateView(View v, Message model, final int position) {
@@ -132,10 +142,13 @@ public class ChatRoom extends AppCompatActivity  {
                 String msg = model.getTextMessage();
                 // Decrypt...
                 msg = current_user.decrypt(msg);
-                // ...
+
+                // Назначение полей
                 author.setText(model.getAuthor());
                 textMessage.setText(msg);
                 timeMessage.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getTimeMessage()));
+
+                // Прокрутка сообщений
                 listMessages.post(new Runnable() {
                     @Override
                     public void run() {
@@ -146,10 +159,35 @@ public class ChatRoom extends AppCompatActivity  {
         };
         listMessages.setAdapter(adapter);
 
+/*
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.List_of_messages);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        FirebaseRecyclerAdapter<Message, ViewHolder> adapter = new FirebaseRecyclerAdapter<Message, ViewHolder>(
+                Message.class,
+                R.layout.item,
+                ViewHolder.class,
+                messages
+        ) {
+            @Override
+            protected void populateViewHolder(ViewHolder viewHolder, Message model, int position) {
+                String msg = model.getTextMessage();
+                // Decrypt...
+                msg = current_user.decrypt(msg);
+
+                viewHolder.author.setText(model.getAuthor());
+                viewHolder.textMessage.setText(msg);
+                viewHolder.timeMessage.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getTimeMessage()));
+                Snackbar.make(activity_main, "Выход выполнен", Snackbar.LENGTH_SHORT).show();
+            }
+        };
+
+        recyclerView.setAdapter(adapter);
+*/
     }
 
     /**
-     * \brief Данная функция предназначена для получения ключей
+     * @brief Данная функция предназначена для получения ключей
      */
     public void get_keys() {
         sPref = getSharedPreferences(mAuth.getInstance().getCurrentUser().getUid(), MODE_PRIVATE);
@@ -158,7 +196,7 @@ public class ChatRoom extends AppCompatActivity  {
         current_user.setUserPrivateKeyEncStr(sPref.getString("Private_Key", ""));
 
         if(current_user.getUserPubKeyEncStr() == "" || current_user.getUserPrivateKeyEncStr() == "") {
-            Toast.makeText(ChatRoom.this, "Ключи не сгенерированы.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ChatRoom.this, "Ключи не сгенерированы. Поробуйте повторить попытку.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -199,7 +237,7 @@ public class ChatRoom extends AppCompatActivity  {
     }
 
     /**
-     * \brief Данная функция предназначена для обработки публичных ключей администатором
+     * @brief Данная функция предназначена для обработки публичных ключей администатором
      */
     private void Admin_actrivity() {
         pkeys.addChildEventListener(new ChildEventListener() {
