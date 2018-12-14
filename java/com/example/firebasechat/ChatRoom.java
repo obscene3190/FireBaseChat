@@ -45,6 +45,8 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.*;
 
+import static android.support.v7.widget.RecyclerView.TOUCH_SLOP_DEFAULT;
+
 /**
  * \brief Данное Activity представляет собой комнату обмена зашифрованными сообщениями
  */
@@ -127,41 +129,9 @@ public class ChatRoom extends AppCompatActivity  {
      * Данная функция обращается к базе данных сообщений пользователей и, используя специальный адаптер, отображает их
      */
     private void displayChat() {
-
-        final ListView listMessages = (ListView)findViewById(R.id.list_of_messages);
-
-        adapter = new FirebaseListAdapter<Message>(this, Message.class, R.layout.item, messages) {
-            @Override
-            protected void populateView(View v, Message model, final int position) {
-                TextView textMessage, author, timeMessage;
-
-                textMessage = (TextView)v.findViewById(R.id.tvMessage);
-                author = (TextView)v.findViewById(R.id.tvUser);
-                timeMessage = (TextView)v.findViewById(R.id.tvDate);
-
-                String msg = model.getTextMessage();
-                // Decrypt...
-                msg = current_user.decrypt(msg);
-
-                // Назначение полей
-                author.setText(model.getAuthor());
-                textMessage.setText(msg);
-                timeMessage.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getTimeMessage()));
-
-                // Прокрутка сообщений
-                listMessages.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        listMessages.setSelection(position);
-                    }
-                });
-            }
-        };
-        listMessages.setAdapter(adapter);
-
-/*
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.List_of_messages);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list_of_messages);
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(manager);
 
         FirebaseRecyclerAdapter<Message, ViewHolder> adapter = new FirebaseRecyclerAdapter<Message, ViewHolder>(
                 Message.class,
@@ -170,20 +140,28 @@ public class ChatRoom extends AppCompatActivity  {
                 messages
         ) {
             @Override
-            protected void populateViewHolder(ViewHolder viewHolder, Message model, int position) {
+            protected void populateViewHolder(ViewHolder viewHolder, Message model, final int position) {
                 String msg = model.getTextMessage();
+
                 // Decrypt...
                 msg = current_user.decrypt(msg);
 
+                // Назначаем поля
                 viewHolder.author.setText(model.getAuthor());
                 viewHolder.textMessage.setText(msg);
                 viewHolder.timeMessage.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getTimeMessage()));
-                Snackbar.make(activity_main, "Выход выполнен", Snackbar.LENGTH_SHORT).show();
+
+                // Делаем прокрутку
+                recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                    @Override
+                    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                        recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+                    }
+                });
             }
         };
 
         recyclerView.setAdapter(adapter);
-*/
     }
 
     /**

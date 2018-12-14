@@ -60,10 +60,11 @@ public class Message {
      * Getter для времени сообщения
      * \return Время сообщения
      */
-    public long getTimeMessage() {
-        return timeMessage;
+    public String getTimeMessageString() {
+        return String.valueOf(timeMessage);
     }
 
+    public long getTimeMessage() { return timeMessage; }
     /**
      * Setter для времени сообщения
      * \param timeMessage время сообщения
