@@ -1,6 +1,7 @@
 package com.example.firebasechat;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.SharedPreferences;
@@ -50,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText ETemail; ///< Поле ввода email
     private EditText ETpassword; ///< Поле ввода пароля
 
+    ProgressBar progress;
+
     String email;
     String password;
 
@@ -59,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button Registration; ///< Кнопка регистрации
     TextView instructions; ///< Текст-инструкция для пользователя, который проходит регистрацию
 
-    User current_user; ///< Пользователь
+    static User current_user; ///< Пользователь
 
     DatabaseReference pkeys = FirebaseDatabase.getInstance().getReference("Public_Key"); ///< Базад данных публичных ключей
 
@@ -73,12 +77,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mAuth = FirebaseAuth.getInstance();
 
+        progress = (ProgressBar) findViewById(R.id.progress);
         ETemail = (EditText) findViewById(R.id.et_email);
         ETpassword = (EditText) findViewById(R.id.et_password);
         instructions = (TextView) findViewById(R.id.instruction);
 
         findViewById(R.id.btn_sign_in).setOnClickListener(this);
         findViewById(R.id.btn_registration).setOnClickListener(this);
+        findViewById(R.id.Authors).setOnClickListener(this);
 
         FirebaseUser user = mAuth.getCurrentUser();
 
@@ -110,6 +116,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 instructions.setVisibility(View.VISIBLE);
                 registration(ETemail.getText().toString(), ETpassword.getText().toString());
             }
+        }
+        else if (view.getId() == R.id.Authors) {
+            Intent intent = new Intent(MainActivity.this, Authors.class);
+            startActivity(intent);
         }
     }
 
@@ -148,6 +158,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful())
                 {
+                    keys_generation();
+                    /*
                     // Процесс регистрации для пользователя: он создает ключи, отправляет их и ждет
                     current_user = new User();
                     current_user.init(0);
@@ -165,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     Intent intent = new Intent(MainActivity.this,ChatRoom.class);
                     startActivity(intent);
-                    //...
+                    */
 
                 }
                 else
@@ -177,20 +189,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * \brief Переотправка ключей для пользователей, у которых нет их на данном устройстве
      */
-    public void reregistration () {
+    public void keys_generation () {
         current_user = new User();
-        current_user.init(0);
+        // отправить в другой поток метод инит, а в основу отобразить колесико зарузки
+        Key_Thread key = new Key_Thread();
+        key.execute(current_user);
+        //...
 
+        //current_user.init(0);
         // сохранение пары ключей(приватного и публичного) в память устройства
-        sPref = getSharedPreferences(mAuth.getInstance().getCurrentUser().getUid(), MODE_PRIVATE);
-        SharedPreferences.Editor ed = sPref.edit();
 
-        ed.putString("Public_Key", current_user.getUserPubKeyEncStr());
-        ed.putString("Private_Key", current_user.getUserPrivateKeyEncStr());
-        ed.commit();
-
-        pkeys.child(mAuth.getInstance().getCurrentUser().getUid()).setValue(current_user.getUserPubKeyEncStr());
-        Toast.makeText(MainActivity.this, "Ключ отправлен, ожидайте ответа Администратора", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(MainActivity.this, "Ключ отправлен, ожидайте ответа Администратора", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -256,15 +265,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (sessionPair[0].equals("") || sessionPair[1].equals("")) {
                 instructions.setVisibility(View.VISIBLE);
                 Toast.makeText(MainActivity.this, "На данном устройстве нет ключей, создание...", Toast.LENGTH_SHORT).show();
-                reregistration();
+                keys_generation();
             }
             else {
                 Intent intent = new Intent(MainActivity.this, ChatRoom.class);
                 startActivity(intent);
             }
         }
+        else {
+            Intent intent = new Intent(MainActivity.this, ChatRoom.class);
+            startActivity(intent);
+        }
+    }
 
-        Intent intent = new Intent(MainActivity.this, ChatRoom.class);
-        startActivity(intent);
+    private class Key_Thread extends AsyncTask<User, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progress.setVisibility(View.VISIBLE);
+            findViewById(R.id.btn_sign_in).setEnabled(false);
+            findViewById(R.id.btn_registration).setEnabled(false);
+            findViewById(R.id.Authors).setEnabled(false);
+        }
+
+        @Override
+        protected Void doInBackground(User ... current_user) {
+            try {
+                current_user[0].init(0);
+                sPref = getSharedPreferences(mAuth.getInstance().getCurrentUser().getUid(), MODE_PRIVATE);
+                SharedPreferences.Editor ed = sPref.edit();
+
+                ed.putString("Public_Key", current_user[0].getUserPubKeyEncStr());
+                ed.putString("Private_Key", current_user[0].getUserPrivateKeyEncStr());
+                ed.commit();
+
+                pkeys.child(mAuth.getInstance().getCurrentUser().getUid()).setValue(current_user[0].getUserPubKeyEncStr());
+            }
+            catch (Exception ex ) {
+                ex.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            progress.setVisibility(View.INVISIBLE);
+            findViewById(R.id.btn_sign_in).setEnabled(true);
+            findViewById(R.id.btn_registration).setEnabled(true);
+            findViewById(R.id.Authors).setEnabled(true);
+            Intent intent = new Intent(MainActivity.this, ChatRoom.class);
+            startActivity(intent);
+        }
     }
 }
