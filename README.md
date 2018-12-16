@@ -1,5 +1,7 @@
 # FireBaseChat
 
+[![Build Status](https://travis-ci.org/obscene3190/FireBaseChat.svg?branch=master)](https://travis-ci.org/obscene3190/FireBaseChat)
+
 ## Ссылка на скачиваение последней версии(постоянно обновляется). Текущая версия приложения 1.1.1:
 
 https://yadi.sk/d/inyRPy0MFmRqAQ
