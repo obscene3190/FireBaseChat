@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/edittextstyle"
+    android:layout_margin="4dp"
+    android:padding="4dp">
+
+    <TextView
+        android:id="@+id/User"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:paddingLeft="8dp"
+        android:text="tvUser"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/Date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingRight="8dp"
+        android:text="tvDate"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/Message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingBottom="4dp"
+        android:paddingLeft="8dp"
+        android:text="tvMessage"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_below="@+id/User"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>

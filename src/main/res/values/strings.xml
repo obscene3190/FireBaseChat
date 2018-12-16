@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">NedoChat</string>
+    <string name="layout_name">Room</string>
+    <string name="about_text">
+    При успешной регистрации начнется генерация Ваших индивидуальных ключей, это может занять некоторое время.\nЕсли вы авторизируйтесь впервые на данном устройстве, то также произойдет процесс обмена ключами.</string>
+    <string name="about_title">О программе</string>
+</resources>
