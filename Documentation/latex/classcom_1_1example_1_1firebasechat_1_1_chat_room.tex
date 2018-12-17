@@ -1,0 +1,246 @@
+\hypertarget{classcom_1_1example_1_1firebasechat_1_1_chat_room}{}\section{Класс com.\+example.\+firebasechat.\+Chat\+Room}
+\label{classcom_1_1example_1_1firebasechat_1_1_chat_room}\index{com.\+example.\+firebasechat.\+Chat\+Room@{com.\+example.\+firebasechat.\+Chat\+Room}}
+
+
+Данное Activity представляет собой комнату обмена зашифрованными сообщениями  
+
+
+Граф наследования\+:com.\+example.\+firebasechat.\+Chat\+Room\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classcom_1_1example_1_1firebasechat_1_1_chat_room}
+\end{center}
+\end{figure}
+\subsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_chat_room_a4523f252ff4e59d283df68e2844d8019}{display\+Chat}} ()
+\begin{DoxyCompactList}\small\item\em Функция отображения сообщений \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_chat_room_a581058422cc44701b83f7c2a298406a9}{get\+\_\+keys}} ()
+\begin{DoxyCompactList}\small\item\em Данная функция предназначена для получения ключей \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_chat_room_a2772aea181483bc52c5fdffcf7fb9f79}{Admin\+\_\+actrivity}} ()
+\begin{DoxyCompactList}\small\item\em Данная функция предназначена для обработки публичных ключей администатором \end{DoxyCompactList}\item 
+boolean \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_chat_room_a2c0ed8faa3bb7d8d5ac7959292c113fa}{on\+Create\+Options\+Menu}} (Menu menu)
+\begin{DoxyCompactList}\small\item\em Функция создания кнопки выхода \end{DoxyCompactList}\item 
+boolean \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_chat_room_a278ca3b8374bddc73823cf42eeb62ba2}{on\+Options\+Item\+Selected}} (Menu\+Item item)
+\begin{DoxyCompactList}\small\item\em Обработка нажатия на кнопку выхода \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Открытые атрибуты}
+\begin{DoxyCompactItemize}
+\item 
+Firebase\+List\+Adapter$<$ \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_message}{Message}} $>$ \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_chat_room_aea339a52dcfcefb9f710a47548f37fed}{adapter}}
+\begin{DoxyCompactList}\small\item\em Адаптер для отображения сообщений с сервера \end{DoxyCompactList}\item 
+Database\+Reference \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_chat_room_af6807d5446ac002a074f0ad11724ce71}{Admen}} = Firebase\+Database.\+get\+Instance().get\+Reference(\char`\"{}Admen\char`\"{})
+\begin{DoxyCompactList}\small\item\em База данных с обработанными Администратором публичными ключами пользователей \end{DoxyCompactList}\item 
+Database\+Reference \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_chat_room_adb882b49c6dbcbe1508d090eb2507505}{messages}} = Firebase\+Database.\+get\+Instance().get\+Reference(\char`\"{}messages\char`\"{})
+\begin{DoxyCompactList}\small\item\em База данных с сообщениям пользователей \end{DoxyCompactList}\item 
+Database\+Reference \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_chat_room_ad3a0dbe421eb87403be4582e54eac253}{pkeys}} = Firebase\+Database.\+get\+Instance().get\+Reference(\char`\"{}Public\+\_\+\+Key\char`\"{})
+\begin{DoxyCompactList}\small\item\em Базад данных публичных ключей \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Статические открытые данные}
+\begin{DoxyCompactItemize}
+\item 
+static int \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_chat_room_a16b9729a48a21196941e042b2768cb26}{M\+A\+X\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+L\+E\+N\+G\+TH}} = 300
+\begin{DoxyCompactList}\small\item\em Максимальная длина сообщения \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Защищенные члены}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_chat_room_a5eb5c76ba6bdb4aa636bf1bd26364a02}{on\+Create}} (Bundle saved\+Instance\+State)
+\end{DoxyCompactItemize}
+
+
+\subsection{Подробное описание}
+Данное Activity представляет собой комнату обмена зашифрованными сообщениями 
+
+См. определение в файле Chat\+Room.\+java строка 55
+
+
+
+\subsection{Методы}
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_chat_room_a2772aea181483bc52c5fdffcf7fb9f79}\label{classcom_1_1example_1_1firebasechat_1_1_chat_room_a2772aea181483bc52c5fdffcf7fb9f79}} 
+\index{com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}!Admin\+\_\+actrivity@{Admin\+\_\+actrivity}}
+\index{Admin\+\_\+actrivity@{Admin\+\_\+actrivity}!com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}}
+\subsubsection{\texorpdfstring{Admin\+\_\+actrivity()}{Admin\_actrivity()}}
+{\footnotesize\ttfamily void com.\+example.\+firebasechat.\+Chat\+Room.\+Admin\+\_\+actrivity (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Данная функция предназначена для обработки публичных ключей администатором 
+
+Слушатель данных из базы данных 
+\begin{DoxyParams}{Аргументы}
+{\em data\+Snapshot} & снимок обекта из базы данных\\
+\hline
+\end{DoxyParams}
+
+
+См. определение в файле Chat\+Room.\+java строка 236
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_chat_room_a4523f252ff4e59d283df68e2844d8019}\label{classcom_1_1example_1_1firebasechat_1_1_chat_room_a4523f252ff4e59d283df68e2844d8019}} 
+\index{com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}!display\+Chat@{display\+Chat}}
+\index{display\+Chat@{display\+Chat}!com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}}
+\subsubsection{\texorpdfstring{display\+Chat()}{displayChat()}}
+{\footnotesize\ttfamily void com.\+example.\+firebasechat.\+Chat\+Room.\+display\+Chat (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Функция отображения сообщений 
+
+Данная функция обращается к базе данных сообщений пользователей и, используя специальный адаптер, отображает их 
+
+См. определение в файле Chat\+Room.\+java строка 141
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_chat_room_a581058422cc44701b83f7c2a298406a9}\label{classcom_1_1example_1_1firebasechat_1_1_chat_room_a581058422cc44701b83f7c2a298406a9}} 
+\index{com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}!get\+\_\+keys@{get\+\_\+keys}}
+\index{get\+\_\+keys@{get\+\_\+keys}!com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}}
+\subsubsection{\texorpdfstring{get\+\_\+keys()}{get\_keys()}}
+{\footnotesize\ttfamily void com.\+example.\+firebasechat.\+Chat\+Room.\+get\+\_\+keys (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Данная функция предназначена для получения ключей 
+
+Контроль добавления данных в базу данных 
+\begin{DoxyParams}{Аргументы}
+{\em data\+Snapshot} & снимок обекта из базы данных\\
+\hline
+\end{DoxyParams}
+
+
+См. определение в файле Chat\+Room.\+java строка 182
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_chat_room_a5eb5c76ba6bdb4aa636bf1bd26364a02}\label{classcom_1_1example_1_1firebasechat_1_1_chat_room_a5eb5c76ba6bdb4aa636bf1bd26364a02}} 
+\index{com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}!on\+Create@{on\+Create}}
+\index{on\+Create@{on\+Create}!com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}}
+\subsubsection{\texorpdfstring{on\+Create()}{onCreate()}}
+{\footnotesize\ttfamily void com.\+example.\+firebasechat.\+Chat\+Room.\+on\+Create (\begin{DoxyParamCaption}\item[{Bundle}]{saved\+Instance\+State }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+Создание activity \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_chat_room}{Chat\+Room}} 
+\begin{DoxyParams}{Аргументы}
+{\em saved\+Instance\+State} & \\
+\hline
+\end{DoxyParams}
+
+
+См. определение в файле Chat\+Room.\+java строка 80
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_chat_room_a2c0ed8faa3bb7d8d5ac7959292c113fa}\label{classcom_1_1example_1_1firebasechat_1_1_chat_room_a2c0ed8faa3bb7d8d5ac7959292c113fa}} 
+\index{com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}!on\+Create\+Options\+Menu@{on\+Create\+Options\+Menu}}
+\index{on\+Create\+Options\+Menu@{on\+Create\+Options\+Menu}!com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}}
+\subsubsection{\texorpdfstring{on\+Create\+Options\+Menu()}{onCreateOptionsMenu()}}
+{\footnotesize\ttfamily boolean com.\+example.\+firebasechat.\+Chat\+Room.\+on\+Create\+Options\+Menu (\begin{DoxyParamCaption}\item[{Menu}]{menu }\end{DoxyParamCaption})}
+
+
+
+Функция создания кнопки выхода 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em menu} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+
+\end{DoxyReturn}
+
+
+См. определение в файле Chat\+Room.\+java строка 286
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_chat_room_a278ca3b8374bddc73823cf42eeb62ba2}\label{classcom_1_1example_1_1firebasechat_1_1_chat_room_a278ca3b8374bddc73823cf42eeb62ba2}} 
+\index{com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}!on\+Options\+Item\+Selected@{on\+Options\+Item\+Selected}}
+\index{on\+Options\+Item\+Selected@{on\+Options\+Item\+Selected}!com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}}
+\subsubsection{\texorpdfstring{on\+Options\+Item\+Selected()}{onOptionsItemSelected()}}
+{\footnotesize\ttfamily boolean com.\+example.\+firebasechat.\+Chat\+Room.\+on\+Options\+Item\+Selected (\begin{DoxyParamCaption}\item[{Menu\+Item}]{item }\end{DoxyParamCaption})}
+
+
+
+Обработка нажатия на кнопку выхода 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em item} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+
+\end{DoxyReturn}
+
+
+См. определение в файле Chat\+Room.\+java строка 297
+
+
+
+\subsection{Данные класса}
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_chat_room_aea339a52dcfcefb9f710a47548f37fed}\label{classcom_1_1example_1_1firebasechat_1_1_chat_room_aea339a52dcfcefb9f710a47548f37fed}} 
+\index{com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}!adapter@{adapter}}
+\index{adapter@{adapter}!com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}}
+\subsubsection{\texorpdfstring{adapter}{adapter}}
+{\footnotesize\ttfamily Firebase\+List\+Adapter$<$\mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_message}{Message}}$>$ com.\+example.\+firebasechat.\+Chat\+Room.\+adapter}
+
+
+
+Адаптер для отображения сообщений с сервера 
+
+
+
+См. определение в файле Chat\+Room.\+java строка 57
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_chat_room_af6807d5446ac002a074f0ad11724ce71}\label{classcom_1_1example_1_1firebasechat_1_1_chat_room_af6807d5446ac002a074f0ad11724ce71}} 
+\index{com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}!Admen@{Admen}}
+\index{Admen@{Admen}!com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}}
+\subsubsection{\texorpdfstring{Admen}{Admen}}
+{\footnotesize\ttfamily Database\+Reference com.\+example.\+firebasechat.\+Chat\+Room.\+Admen = Firebase\+Database.\+get\+Instance().get\+Reference(\char`\"{}Admen\char`\"{})}
+
+
+
+База данных с обработанными Администратором публичными ключами пользователей 
+
+
+
+См. определение в файле Chat\+Room.\+java строка 63
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_chat_room_a16b9729a48a21196941e042b2768cb26}\label{classcom_1_1example_1_1firebasechat_1_1_chat_room_a16b9729a48a21196941e042b2768cb26}} 
+\index{com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}!M\+A\+X\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+L\+E\+N\+G\+TH@{M\+A\+X\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+L\+E\+N\+G\+TH}}
+\index{M\+A\+X\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+L\+E\+N\+G\+TH@{M\+A\+X\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+L\+E\+N\+G\+TH}!com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}}
+\subsubsection{\texorpdfstring{M\+A\+X\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+L\+E\+N\+G\+TH}{MAX\_MESSAGE\_LENGTH}}
+{\footnotesize\ttfamily int com.\+example.\+firebasechat.\+Chat\+Room.\+M\+A\+X\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+L\+E\+N\+G\+TH = 300\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Максимальная длина сообщения 
+
+
+
+См. определение в файле Chat\+Room.\+java строка 56
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_chat_room_adb882b49c6dbcbe1508d090eb2507505}\label{classcom_1_1example_1_1firebasechat_1_1_chat_room_adb882b49c6dbcbe1508d090eb2507505}} 
+\index{com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}!messages@{messages}}
+\index{messages@{messages}!com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}}
+\subsubsection{\texorpdfstring{messages}{messages}}
+{\footnotesize\ttfamily Database\+Reference com.\+example.\+firebasechat.\+Chat\+Room.\+messages = Firebase\+Database.\+get\+Instance().get\+Reference(\char`\"{}messages\char`\"{})}
+
+
+
+База данных с сообщениям пользователей 
+
+
+
+См. определение в файле Chat\+Room.\+java строка 64
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_chat_room_ad3a0dbe421eb87403be4582e54eac253}\label{classcom_1_1example_1_1firebasechat_1_1_chat_room_ad3a0dbe421eb87403be4582e54eac253}} 
+\index{com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}!pkeys@{pkeys}}
+\index{pkeys@{pkeys}!com\+::example\+::firebasechat\+::\+Chat\+Room@{com\+::example\+::firebasechat\+::\+Chat\+Room}}
+\subsubsection{\texorpdfstring{pkeys}{pkeys}}
+{\footnotesize\ttfamily Database\+Reference com.\+example.\+firebasechat.\+Chat\+Room.\+pkeys = Firebase\+Database.\+get\+Instance().get\+Reference(\char`\"{}Public\+\_\+\+Key\char`\"{})}
+
+
+
+Базад данных публичных ключей 
+
+
+
+См. определение в файле Chat\+Room.\+java строка 65
+
+
+
+Объявления и описания членов класса находятся в файле\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Games/\+Back\+Up/\+Fire\+Basechat/app/src/main/java/com/example/firebasechat/\mbox{\hyperlink{_chat_room_8java}{Chat\+Room.\+java}}\end{DoxyCompactItemize}

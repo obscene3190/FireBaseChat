@@ -1,0 +1,214 @@
+\hypertarget{classcom_1_1example_1_1firebasechat_1_1_main_activity}{}\section{Класс com.\+example.\+firebasechat.\+Main\+Activity}
+\label{classcom_1_1example_1_1firebasechat_1_1_main_activity}\index{com.\+example.\+firebasechat.\+Main\+Activity@{com.\+example.\+firebasechat.\+Main\+Activity}}
+
+
+Activity регистрации и авторизации пользователей  
+
+
+Граф наследования\+:com.\+example.\+firebasechat.\+Main\+Activity\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classcom_1_1example_1_1firebasechat_1_1_main_activity}
+\end{center}
+\end{figure}
+\subsection*{Классы}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_main_activity_1_1_key___thread}{Key\+\_\+\+Thread}}
+\begin{DoxyCompactList}\small\item\em Поток для обработки генерации ключей \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_main_activity_a859bd2e4eca1bcc5b64414f3fae8dfd5}{on\+Click}} (View view)
+\item 
+void \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_main_activity_ab05b9f3c667fd2a59b127fdf24f7af8f}{signin}} (String email, final String password\+\_\+)
+\begin{DoxyCompactList}\small\item\em Функция, реализующая авторизацию пользователя по паролю и почте \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_main_activity_a95140ec9da54a87bc49b6ba1023cb8bd}{registration}} (String email, String password)
+\begin{DoxyCompactList}\small\item\em Функция, реализующая регистрацию пользователя по паролю и почте \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_main_activity_a61ce1168261dbdab070cb0497ad845eb}{keys\+\_\+generation}} ()
+\begin{DoxyCompactList}\small\item\em Переотправка ключей для пользователей, у которых нет их на данном устройстве \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_main_activity_abca69f1465f860b8f9eedaa3b360201d}{admin\+\_\+auth}} (String password)
+\begin{DoxyCompactList}\small\item\em Авторизация для Администратора \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_main_activity_a4cc4577677e01c9c0898ab0aaa07d670}{user\+\_\+auth}} ()
+\begin{DoxyCompactList}\small\item\em Авторизация для пользователей \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Открытые атрибуты}
+\begin{DoxyCompactItemize}
+\item 
+Database\+Reference \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_main_activity_a058a21d2029c7bfbb3365c50b621e043}{pkeys}} = Firebase\+Database.\+get\+Instance().get\+Reference(\char`\"{}Public\+\_\+\+Key\char`\"{})
+\begin{DoxyCompactList}\small\item\em Базад данных публичных ключей \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Статические открытые данные}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user}{User}} \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_main_activity_a139972aaf697b18799afeede7a832bc0}{current\+\_\+user}}
+\begin{DoxyCompactList}\small\item\em Пользователь \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Защищенные члены}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_main_activity_a65ecbc7b4bebeeee38c9e5ae03720412}{on\+Create}} (Bundle saved\+Instance\+State)
+\begin{DoxyCompactList}\small\item\em Создание activity \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_main_activity}{Main\+Activity}}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Подробное описание}
+Activity регистрации и авторизации пользователей 
+
+Данное Activity предназначено для регистрации или авторизации пользователя, также содержит кнопку перехода на страницу информации об авторах 
+
+См. определение в файле Main\+Activity.\+java строка 47
+
+
+
+\subsection{Методы}
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_main_activity_abca69f1465f860b8f9eedaa3b360201d}\label{classcom_1_1example_1_1firebasechat_1_1_main_activity_abca69f1465f860b8f9eedaa3b360201d}} 
+\index{com\+::example\+::firebasechat\+::\+Main\+Activity@{com\+::example\+::firebasechat\+::\+Main\+Activity}!admin\+\_\+auth@{admin\+\_\+auth}}
+\index{admin\+\_\+auth@{admin\+\_\+auth}!com\+::example\+::firebasechat\+::\+Main\+Activity@{com\+::example\+::firebasechat\+::\+Main\+Activity}}
+\subsubsection{\texorpdfstring{admin\+\_\+auth()}{admin\_auth()}}
+{\footnotesize\ttfamily void com.\+example.\+firebasechat.\+Main\+Activity.\+admin\+\_\+auth (\begin{DoxyParamCaption}\item[{String}]{password }\end{DoxyParamCaption})}
+
+
+
+Авторизация для Администратора 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em password} & \\
+\hline
+\end{DoxyParams}
+
+
+См. определение в файле Main\+Activity.\+java строка 196
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_main_activity_a61ce1168261dbdab070cb0497ad845eb}\label{classcom_1_1example_1_1firebasechat_1_1_main_activity_a61ce1168261dbdab070cb0497ad845eb}} 
+\index{com\+::example\+::firebasechat\+::\+Main\+Activity@{com\+::example\+::firebasechat\+::\+Main\+Activity}!keys\+\_\+generation@{keys\+\_\+generation}}
+\index{keys\+\_\+generation@{keys\+\_\+generation}!com\+::example\+::firebasechat\+::\+Main\+Activity@{com\+::example\+::firebasechat\+::\+Main\+Activity}}
+\subsubsection{\texorpdfstring{keys\+\_\+generation()}{keys\_generation()}}
+{\footnotesize\ttfamily void com.\+example.\+firebasechat.\+Main\+Activity.\+keys\+\_\+generation (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Переотправка ключей для пользователей, у которых нет их на данном устройстве 
+
+
+
+См. определение в файле Main\+Activity.\+java строка 179
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_main_activity_a859bd2e4eca1bcc5b64414f3fae8dfd5}\label{classcom_1_1example_1_1firebasechat_1_1_main_activity_a859bd2e4eca1bcc5b64414f3fae8dfd5}} 
+\index{com\+::example\+::firebasechat\+::\+Main\+Activity@{com\+::example\+::firebasechat\+::\+Main\+Activity}!on\+Click@{on\+Click}}
+\index{on\+Click@{on\+Click}!com\+::example\+::firebasechat\+::\+Main\+Activity@{com\+::example\+::firebasechat\+::\+Main\+Activity}}
+\subsubsection{\texorpdfstring{on\+Click()}{onClick()}}
+{\footnotesize\ttfamily void com.\+example.\+firebasechat.\+Main\+Activity.\+on\+Click (\begin{DoxyParamCaption}\item[{View}]{view }\end{DoxyParamCaption})}
+
+
+
+См. определение в файле Main\+Activity.\+java строка 104
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_main_activity_a65ecbc7b4bebeeee38c9e5ae03720412}\label{classcom_1_1example_1_1firebasechat_1_1_main_activity_a65ecbc7b4bebeeee38c9e5ae03720412}} 
+\index{com\+::example\+::firebasechat\+::\+Main\+Activity@{com\+::example\+::firebasechat\+::\+Main\+Activity}!on\+Create@{on\+Create}}
+\index{on\+Create@{on\+Create}!com\+::example\+::firebasechat\+::\+Main\+Activity@{com\+::example\+::firebasechat\+::\+Main\+Activity}}
+\subsubsection{\texorpdfstring{on\+Create()}{onCreate()}}
+{\footnotesize\ttfamily void com.\+example.\+firebasechat.\+Main\+Activity.\+on\+Create (\begin{DoxyParamCaption}\item[{Bundle}]{saved\+Instance\+State }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Создание activity \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_main_activity}{Main\+Activity}}. 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em saved\+Instance\+State} & \\
+\hline
+\end{DoxyParams}
+
+
+См. определение в файле Main\+Activity.\+java строка 78
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_main_activity_a95140ec9da54a87bc49b6ba1023cb8bd}\label{classcom_1_1example_1_1firebasechat_1_1_main_activity_a95140ec9da54a87bc49b6ba1023cb8bd}} 
+\index{com\+::example\+::firebasechat\+::\+Main\+Activity@{com\+::example\+::firebasechat\+::\+Main\+Activity}!registration@{registration}}
+\index{registration@{registration}!com\+::example\+::firebasechat\+::\+Main\+Activity@{com\+::example\+::firebasechat\+::\+Main\+Activity}}
+\subsubsection{\texorpdfstring{registration()}{registration()}}
+{\footnotesize\ttfamily void com.\+example.\+firebasechat.\+Main\+Activity.\+registration (\begin{DoxyParamCaption}\item[{String}]{email,  }\item[{String}]{password }\end{DoxyParamCaption})}
+
+
+
+Функция, реализующая регистрацию пользователя по паролю и почте 
+
+При успешной регистрации для пользователя генерируются ключи, которые после генерации отправляются на сервер 
+\begin{DoxyParams}{Аргументы}
+{\em email} & Данный, который пользователь ввел в поле почты \\
+\hline
+{\em password} & Данный, который пользователь ввел в поле пароля \\
+\hline
+\end{DoxyParams}
+
+
+См. определение в файле Main\+Activity.\+java строка 162
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_main_activity_ab05b9f3c667fd2a59b127fdf24f7af8f}\label{classcom_1_1example_1_1firebasechat_1_1_main_activity_ab05b9f3c667fd2a59b127fdf24f7af8f}} 
+\index{com\+::example\+::firebasechat\+::\+Main\+Activity@{com\+::example\+::firebasechat\+::\+Main\+Activity}!signin@{signin}}
+\index{signin@{signin}!com\+::example\+::firebasechat\+::\+Main\+Activity@{com\+::example\+::firebasechat\+::\+Main\+Activity}}
+\subsubsection{\texorpdfstring{signin()}{signin()}}
+{\footnotesize\ttfamily void com.\+example.\+firebasechat.\+Main\+Activity.\+signin (\begin{DoxyParamCaption}\item[{String}]{email,  }\item[{final String}]{password\+\_\+ }\end{DoxyParamCaption})}
+
+
+
+Функция, реализующая авторизацию пользователя по паролю и почте 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em email} & Данный, который пользователь ввел в поле почты \\
+\hline
+{\em password} & Данный, который пользователь ввел в поле пароля \\
+\hline
+\end{DoxyParams}
+
+
+См. определение в файле Main\+Activity.\+java строка 137
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_main_activity_a4cc4577677e01c9c0898ab0aaa07d670}\label{classcom_1_1example_1_1firebasechat_1_1_main_activity_a4cc4577677e01c9c0898ab0aaa07d670}} 
+\index{com\+::example\+::firebasechat\+::\+Main\+Activity@{com\+::example\+::firebasechat\+::\+Main\+Activity}!user\+\_\+auth@{user\+\_\+auth}}
+\index{user\+\_\+auth@{user\+\_\+auth}!com\+::example\+::firebasechat\+::\+Main\+Activity@{com\+::example\+::firebasechat\+::\+Main\+Activity}}
+\subsubsection{\texorpdfstring{user\+\_\+auth()}{user\_auth()}}
+{\footnotesize\ttfamily void com.\+example.\+firebasechat.\+Main\+Activity.\+user\+\_\+auth (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Авторизация для пользователей 
+
+
+
+См. определение в файле Main\+Activity.\+java строка 242
+
+
+
+\subsection{Данные класса}
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_main_activity_a139972aaf697b18799afeede7a832bc0}\label{classcom_1_1example_1_1firebasechat_1_1_main_activity_a139972aaf697b18799afeede7a832bc0}} 
+\index{com\+::example\+::firebasechat\+::\+Main\+Activity@{com\+::example\+::firebasechat\+::\+Main\+Activity}!current\+\_\+user@{current\+\_\+user}}
+\index{current\+\_\+user@{current\+\_\+user}!com\+::example\+::firebasechat\+::\+Main\+Activity@{com\+::example\+::firebasechat\+::\+Main\+Activity}}
+\subsubsection{\texorpdfstring{current\+\_\+user}{current\_user}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user}{User}} com.\+example.\+firebasechat.\+Main\+Activity.\+current\+\_\+user\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Пользователь 
+
+
+
+См. определение в файле Main\+Activity.\+java строка 67
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_main_activity_a058a21d2029c7bfbb3365c50b621e043}\label{classcom_1_1example_1_1firebasechat_1_1_main_activity_a058a21d2029c7bfbb3365c50b621e043}} 
+\index{com\+::example\+::firebasechat\+::\+Main\+Activity@{com\+::example\+::firebasechat\+::\+Main\+Activity}!pkeys@{pkeys}}
+\index{pkeys@{pkeys}!com\+::example\+::firebasechat\+::\+Main\+Activity@{com\+::example\+::firebasechat\+::\+Main\+Activity}}
+\subsubsection{\texorpdfstring{pkeys}{pkeys}}
+{\footnotesize\ttfamily Database\+Reference com.\+example.\+firebasechat.\+Main\+Activity.\+pkeys = Firebase\+Database.\+get\+Instance().get\+Reference(\char`\"{}Public\+\_\+\+Key\char`\"{})}
+
+
+
+Базад данных публичных ключей 
+
+
+
+См. определение в файле Main\+Activity.\+java строка 69
+
+
+
+Объявления и описания членов класса находятся в файле\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Games/\+Back\+Up/\+Fire\+Basechat/app/src/main/java/com/example/firebasechat/\mbox{\hyperlink{_main_activity_8java}{Main\+Activity.\+java}}\end{DoxyCompactItemize}

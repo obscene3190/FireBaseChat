@@ -1,0 +1,301 @@
+\hypertarget{classcom_1_1example_1_1firebasechat_1_1_user}{}\section{Класс com.\+example.\+firebasechat.\+User}
+\label{classcom_1_1example_1_1firebasechat_1_1_user}\index{com.\+example.\+firebasechat.\+User@{com.\+example.\+firebasechat.\+User}}
+
+
+Класс пользователя  
+
+
+\subsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user_adc3b037f7e367a6aa8aaac01360d5340}{User}} ()
+\begin{DoxyCompactList}\small\item\em Конструктор класса \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user}{User}}. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user_aa46d2b146ffd91c6b9cf36ec5e194b1f}{set\+Session\+Pair\+\_\+}} (String\mbox{[}$\,$\mbox{]} \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user_a2e442876539909f5f9725196556d5fa7}{session\+Pair\+\_\+}})
+\begin{DoxyCompactList}\small\item\em Установка сессионных ключей \end{DoxyCompactList}\item 
+String \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user_af9252d4d96f56d8a74611553307df0a8}{get\+User\+Pub\+Key\+Enc\+Str}} ()
+\begin{DoxyCompactList}\small\item\em Getter для публичного ключа \end{DoxyCompactList}\item 
+String \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user_a6dc80a46d2e49d8c03299dc5b7b15727}{get\+User\+Private\+Key\+Enc\+Str}} ()
+\begin{DoxyCompactList}\small\item\em Getter для приватного ключа \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user_aecc22b4b773ae3ba00ad0c7ed4db4340}{set\+User\+Pub\+Key\+Enc\+Str}} (String \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user_a92f14106f35b17ca627b7a5ca0dd3d02}{user\+Pub\+Key\+Enc\+Str}})
+\begin{DoxyCompactList}\small\item\em Setter для публичного ключа \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user_a4cef7096288a776f77934c2cd8f84a72}{set\+User\+Private\+Key\+Enc\+Str}} (String \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user_a210e28a59a8e53a7deb7e18027875173}{user\+Private\+Key\+Enc\+Str}})
+\begin{DoxyCompactList}\small\item\em Setter для приватного ключа \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user_a9b6df56e1fc82db7c8d24e81d2250801}{Encrypt\+Session}} (String\mbox{[}$\,$\mbox{]} result)
+\begin{DoxyCompactList}\small\item\em Функкция обрабоки пользователем данных, полученных от администратора Пользователь получает данные администратора, генерирует общий секрет и получаает сессионные ключи \end{DoxyCompactList}\item 
+String \mbox{[}$\,$\mbox{]} \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user_a67d1a7cbc2c9380c36a61503eb44b30f}{D\+H\+Generate\+Admin}} (String \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user_a92f14106f35b17ca627b7a5ca0dd3d02}{user\+Pub\+Key\+Enc\+Str}})
+\begin{DoxyCompactList}\small\item\em Функция Администратора, где обрабатывается публичный клч пользователя и создаются необходимые ключи \end{DoxyCompactList}\item 
+String \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user_a7f85ab138092dde2b7f24fc263aaa8ae}{encrypt}} (String value)
+\begin{DoxyCompactList}\small\item\em Функция шифрования сообщения \end{DoxyCompactList}\item 
+String \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user_ac47b81720a3550b1856695932fec607a}{decrypt}} (String encrypted)
+\begin{DoxyCompactList}\small\item\em Функция расшифровывает сообщения с сервера \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Открытые атрибуты}
+\begin{DoxyCompactItemize}
+\item 
+String \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user_a92f14106f35b17ca627b7a5ca0dd3d02}{user\+Pub\+Key\+Enc\+Str}}
+\item 
+String \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user_a210e28a59a8e53a7deb7e18027875173}{user\+Private\+Key\+Enc\+Str}}
+\item 
+Key\+Pair \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user_a4d6f0638b114faeb2b30a6736ef46cf8}{user\+Kpair}}
+\end{DoxyCompactItemize}
+\subsection*{Статические открытые данные}
+\begin{DoxyCompactItemize}
+\item 
+static String \mbox{[}$\,$\mbox{]} \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user_a2e442876539909f5f9725196556d5fa7}{session\+Pair\+\_\+}} = new String\mbox{[}2\mbox{]}
+\begin{DoxyCompactList}\small\item\em Сессионная пара ключей пользователя \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Подробное описание}
+Класс пользователя 
+
+Класс пользоваателя выполняет основные функции, необходимые для обмена ключами между пользователем и администратором, а также функции шифрования и расшифрования сообщения Со стороны пользователя генерируется пара ключей, а после обрабатываются данные, полученные от администратора Со стороны администратора обрабатываются данные, полученные пользователем 
+
+См. определение в файле User.\+java строка 22
+
+
+
+\subsection{Конструктор(ы)}
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_user_adc3b037f7e367a6aa8aaac01360d5340}\label{classcom_1_1example_1_1firebasechat_1_1_user_adc3b037f7e367a6aa8aaac01360d5340}} 
+\index{com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}!User@{User}}
+\index{User@{User}!com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}}
+\subsubsection{\texorpdfstring{User()}{User()}}
+{\footnotesize\ttfamily com.\+example.\+firebasechat.\+User.\+User (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Конструктор класса \mbox{\hyperlink{classcom_1_1example_1_1firebasechat_1_1_user}{User}}. 
+
+
+
+См. определение в файле User.\+java строка 50
+
+
+
+\subsection{Методы}
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_user_ac47b81720a3550b1856695932fec607a}\label{classcom_1_1example_1_1firebasechat_1_1_user_ac47b81720a3550b1856695932fec607a}} 
+\index{com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}!decrypt@{decrypt}}
+\index{decrypt@{decrypt}!com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}}
+\subsubsection{\texorpdfstring{decrypt()}{decrypt()}}
+{\footnotesize\ttfamily String com.\+example.\+firebasechat.\+User.\+decrypt (\begin{DoxyParamCaption}\item[{String}]{encrypted }\end{DoxyParamCaption})}
+
+
+
+Функция расшифровывает сообщения с сервера 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em encrypted} & Зашифрованное сообщение \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+Расшифрованное сообщение 
+\end{DoxyReturn}
+
+
+См. определение в файле User.\+java строка 249
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_user_a67d1a7cbc2c9380c36a61503eb44b30f}\label{classcom_1_1example_1_1firebasechat_1_1_user_a67d1a7cbc2c9380c36a61503eb44b30f}} 
+\index{com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}!D\+H\+Generate\+Admin@{D\+H\+Generate\+Admin}}
+\index{D\+H\+Generate\+Admin@{D\+H\+Generate\+Admin}!com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}}
+\subsubsection{\texorpdfstring{D\+H\+Generate\+Admin()}{DHGenerateAdmin()}}
+{\footnotesize\ttfamily String \mbox{[}$\,$\mbox{]} com.\+example.\+firebasechat.\+User.\+D\+H\+Generate\+Admin (\begin{DoxyParamCaption}\item[{String}]{user\+Pub\+Key\+Enc\+Str }\end{DoxyParamCaption})}
+
+
+
+Функция Администратора, где обрабатывается публичный клч пользователя и создаются необходимые ключи 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em user\+Pub\+Key\+Enc\+Str} & Публичный ключ пользователя \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+Результат обрабоки данных пользователя 
+\end{DoxyReturn}
+
+
+См. определение в файле User.\+java строка 172
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_user_a7f85ab138092dde2b7f24fc263aaa8ae}\label{classcom_1_1example_1_1firebasechat_1_1_user_a7f85ab138092dde2b7f24fc263aaa8ae}} 
+\index{com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}!encrypt@{encrypt}}
+\index{encrypt@{encrypt}!com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}}
+\subsubsection{\texorpdfstring{encrypt()}{encrypt()}}
+{\footnotesize\ttfamily String com.\+example.\+firebasechat.\+User.\+encrypt (\begin{DoxyParamCaption}\item[{String}]{value }\end{DoxyParamCaption})}
+
+
+
+Функция шифрования сообщения 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em value} & Сообщение \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+Зашифрованное сообщение 
+\end{DoxyReturn}
+
+
+См. определение в файле User.\+java строка 228
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_user_a9b6df56e1fc82db7c8d24e81d2250801}\label{classcom_1_1example_1_1firebasechat_1_1_user_a9b6df56e1fc82db7c8d24e81d2250801}} 
+\index{com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}!Encrypt\+Session@{Encrypt\+Session}}
+\index{Encrypt\+Session@{Encrypt\+Session}!com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}}
+\subsubsection{\texorpdfstring{Encrypt\+Session()}{EncryptSession()}}
+{\footnotesize\ttfamily void com.\+example.\+firebasechat.\+User.\+Encrypt\+Session (\begin{DoxyParamCaption}\item[{String \mbox{[}$\,$\mbox{]}}]{result }\end{DoxyParamCaption})}
+
+
+
+Функкция обрабоки пользователем данных, полученных от администратора Пользователь получает данные администратора, генерирует общий секрет и получаает сессионные ключи 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em result} & Данные, который пользователь получает от администратора \\
+\hline
+\end{DoxyParams}
+
+
+См. определение в файле User.\+java строка 125
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_user_a6dc80a46d2e49d8c03299dc5b7b15727}\label{classcom_1_1example_1_1firebasechat_1_1_user_a6dc80a46d2e49d8c03299dc5b7b15727}} 
+\index{com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}!get\+User\+Private\+Key\+Enc\+Str@{get\+User\+Private\+Key\+Enc\+Str}}
+\index{get\+User\+Private\+Key\+Enc\+Str@{get\+User\+Private\+Key\+Enc\+Str}!com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}}
+\subsubsection{\texorpdfstring{get\+User\+Private\+Key\+Enc\+Str()}{getUserPrivateKeyEncStr()}}
+{\footnotesize\ttfamily String com.\+example.\+firebasechat.\+User.\+get\+User\+Private\+Key\+Enc\+Str (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Getter для приватного ключа 
+
+\begin{DoxyReturn}{Возвращает}
+Приватный ключ 
+\end{DoxyReturn}
+
+
+См. определение в файле User.\+java строка 100
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_user_af9252d4d96f56d8a74611553307df0a8}\label{classcom_1_1example_1_1firebasechat_1_1_user_af9252d4d96f56d8a74611553307df0a8}} 
+\index{com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}!get\+User\+Pub\+Key\+Enc\+Str@{get\+User\+Pub\+Key\+Enc\+Str}}
+\index{get\+User\+Pub\+Key\+Enc\+Str@{get\+User\+Pub\+Key\+Enc\+Str}!com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}}
+\subsubsection{\texorpdfstring{get\+User\+Pub\+Key\+Enc\+Str()}{getUserPubKeyEncStr()}}
+{\footnotesize\ttfamily String com.\+example.\+firebasechat.\+User.\+get\+User\+Pub\+Key\+Enc\+Str (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Getter для публичного ключа 
+
+\begin{DoxyReturn}{Возвращает}
+Публичный ключ 
+\end{DoxyReturn}
+
+
+См. определение в файле User.\+java строка 92
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_user_aa46d2b146ffd91c6b9cf36ec5e194b1f}\label{classcom_1_1example_1_1firebasechat_1_1_user_aa46d2b146ffd91c6b9cf36ec5e194b1f}} 
+\index{com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}!set\+Session\+Pair\+\_\+@{set\+Session\+Pair\+\_\+}}
+\index{set\+Session\+Pair\+\_\+@{set\+Session\+Pair\+\_\+}!com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}}
+\subsubsection{\texorpdfstring{set\+Session\+Pair\+\_\+()}{setSessionPair\_()}}
+{\footnotesize\ttfamily void com.\+example.\+firebasechat.\+User.\+set\+Session\+Pair\+\_\+ (\begin{DoxyParamCaption}\item[{String \mbox{[}$\,$\mbox{]}}]{session\+Pair\+\_\+ }\end{DoxyParamCaption})}
+
+
+
+Установка сессионных ключей 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em session\+Pair\+\_\+} & сессионная пара \\
+\hline
+\end{DoxyParams}
+
+
+См. определение в файле User.\+java строка 84
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_user_a4cef7096288a776f77934c2cd8f84a72}\label{classcom_1_1example_1_1firebasechat_1_1_user_a4cef7096288a776f77934c2cd8f84a72}} 
+\index{com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}!set\+User\+Private\+Key\+Enc\+Str@{set\+User\+Private\+Key\+Enc\+Str}}
+\index{set\+User\+Private\+Key\+Enc\+Str@{set\+User\+Private\+Key\+Enc\+Str}!com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}}
+\subsubsection{\texorpdfstring{set\+User\+Private\+Key\+Enc\+Str()}{setUserPrivateKeyEncStr()}}
+{\footnotesize\ttfamily void com.\+example.\+firebasechat.\+User.\+set\+User\+Private\+Key\+Enc\+Str (\begin{DoxyParamCaption}\item[{String}]{user\+Private\+Key\+Enc\+Str }\end{DoxyParamCaption})}
+
+
+
+Setter для приватного ключа 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em user\+Private\+Key\+Enc\+Str} & Приватный ключ \\
+\hline
+\end{DoxyParams}
+
+
+См. определение в файле User.\+java строка 116
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_user_aecc22b4b773ae3ba00ad0c7ed4db4340}\label{classcom_1_1example_1_1firebasechat_1_1_user_aecc22b4b773ae3ba00ad0c7ed4db4340}} 
+\index{com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}!set\+User\+Pub\+Key\+Enc\+Str@{set\+User\+Pub\+Key\+Enc\+Str}}
+\index{set\+User\+Pub\+Key\+Enc\+Str@{set\+User\+Pub\+Key\+Enc\+Str}!com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}}
+\subsubsection{\texorpdfstring{set\+User\+Pub\+Key\+Enc\+Str()}{setUserPubKeyEncStr()}}
+{\footnotesize\ttfamily void com.\+example.\+firebasechat.\+User.\+set\+User\+Pub\+Key\+Enc\+Str (\begin{DoxyParamCaption}\item[{String}]{user\+Pub\+Key\+Enc\+Str }\end{DoxyParamCaption})}
+
+
+
+Setter для публичного ключа 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em user\+Pub\+Key\+Enc\+Str} & Публичный ключ \\
+\hline
+\end{DoxyParams}
+
+
+См. определение в файле User.\+java строка 108
+
+
+
+\subsection{Данные класса}
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_user_a2e442876539909f5f9725196556d5fa7}\label{classcom_1_1example_1_1firebasechat_1_1_user_a2e442876539909f5f9725196556d5fa7}} 
+\index{com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}!session\+Pair\+\_\+@{session\+Pair\+\_\+}}
+\index{session\+Pair\+\_\+@{session\+Pair\+\_\+}!com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}}
+\subsubsection{\texorpdfstring{session\+Pair\+\_\+}{sessionPair\_}}
+{\footnotesize\ttfamily String \mbox{[}$\,$\mbox{]} com.\+example.\+firebasechat.\+User.\+session\+Pair\+\_\+ = new String\mbox{[}2\mbox{]}\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Сессионная пара ключей пользователя 
+
+
+
+См. определение в файле User.\+java строка 45
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_user_a4d6f0638b114faeb2b30a6736ef46cf8}\label{classcom_1_1example_1_1firebasechat_1_1_user_a4d6f0638b114faeb2b30a6736ef46cf8}} 
+\index{com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}!user\+Kpair@{user\+Kpair}}
+\index{user\+Kpair@{user\+Kpair}!com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}}
+\subsubsection{\texorpdfstring{user\+Kpair}{userKpair}}
+{\footnotesize\ttfamily Key\+Pair com.\+example.\+firebasechat.\+User.\+user\+Kpair}
+
+
+
+См. определение в файле User.\+java строка 39
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_user_a210e28a59a8e53a7deb7e18027875173}\label{classcom_1_1example_1_1firebasechat_1_1_user_a210e28a59a8e53a7deb7e18027875173}} 
+\index{com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}!user\+Private\+Key\+Enc\+Str@{user\+Private\+Key\+Enc\+Str}}
+\index{user\+Private\+Key\+Enc\+Str@{user\+Private\+Key\+Enc\+Str}!com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}}
+\subsubsection{\texorpdfstring{user\+Private\+Key\+Enc\+Str}{userPrivateKeyEncStr}}
+{\footnotesize\ttfamily String com.\+example.\+firebasechat.\+User.\+user\+Private\+Key\+Enc\+Str}
+
+
+
+См. определение в файле User.\+java строка 33
+
+\mbox{\Hypertarget{classcom_1_1example_1_1firebasechat_1_1_user_a92f14106f35b17ca627b7a5ca0dd3d02}\label{classcom_1_1example_1_1firebasechat_1_1_user_a92f14106f35b17ca627b7a5ca0dd3d02}} 
+\index{com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}!user\+Pub\+Key\+Enc\+Str@{user\+Pub\+Key\+Enc\+Str}}
+\index{user\+Pub\+Key\+Enc\+Str@{user\+Pub\+Key\+Enc\+Str}!com\+::example\+::firebasechat\+::\+User@{com\+::example\+::firebasechat\+::\+User}}
+\subsubsection{\texorpdfstring{user\+Pub\+Key\+Enc\+Str}{userPubKeyEncStr}}
+{\footnotesize\ttfamily String com.\+example.\+firebasechat.\+User.\+user\+Pub\+Key\+Enc\+Str}
+
+
+
+См. определение в файле User.\+java строка 27
+
+
+
+Объявления и описания членов класса находятся в файле\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Games/\+Back\+Up/\+Fire\+Basechat/app/src/main/java/com/example/firebasechat/\mbox{\hyperlink{_user_8java}{User.\+java}}\end{DoxyCompactItemize}
