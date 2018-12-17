@@ -7,10 +7,17 @@ import android.widget.TextView;
 
 import com.bumptech.glide.load.resource.bitmap.ImageVideoBitmapDecoder;
 
+/**
+ * @brief Класс для отображения страницы с информацией о создателях
+ */
 public class Authors extends AppCompatActivity {
     ImageView author1, author2;
     TextView desc1, desc2;
 
+    /**
+     * @brief Создание activity Authors
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

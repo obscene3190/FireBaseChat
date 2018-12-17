@@ -12,31 +12,49 @@ import java.security.*;
 import java.security.spec.X509EncodedKeySpec;
 
 /**
- * \brief Класс пользователя
+ * @brief Класс пользователя
+ *
  * Класс пользоваателя выполняет основные функции, необходимые для обмена ключами между пользователем и администратором,
  * а также функции шифрования и расшифрования сообщения
  * Со стороны пользователя генерируется пара ключей, а после обрабатываются данные, полученные от администратора
  * Со стороны администратора обрабатываются данные, полученные пользователем
  */
 public class User {
-    private String userPubKeyEncStr; ///< Публичный ключ пользователя
-    private String userPrivateKeyEncStr; ///< Приватный ключ пользователя
-    KeyPair userKpair; ///< Пара ключей пользователя
-
-    // AES
-    static public String[] sessionPair_ = new String[2]; ///< Сессионная пара ключей
+    /**
+     * @brief Публичный ключ пользователя
+     * @var String
+     */
+    public String userPubKeyEncStr;
 
     /**
-     * Конструктор класса User
+     * @brief Приватный ключ пользователя
+     * @var String
+     */
+    public String userPrivateKeyEncStr;
+
+    /**
+     * @brief Пара ключей пользователя
+     * @var String
+     */
+    public KeyPair userKpair;
+
+    // AES
+    /**
+     * @brief Сессионная пара ключей пользователя
+     */
+    static public String[] sessionPair_ = new String[2];
+
+    /**
+     * @brief Конструктор класса User
      */
     public User() {
 
     }
 
     /**
-     * /brief Инициализация пользователя
+     * @brief Инициализация пользователя
      * Функция инициализации пользователя, в зависимости от аргумента функции. Если status 1, то пользователь уже имеет сесионные ключи и ему не надо генерировать ключи для обмена, в противном случае генерируются ключи для обмена
-     * \param status показывает, есть ли у пользователя ключи, или их необходимо сгенерировать
+     * @param status показывает, есть ли у пользователя ключи, или их необходимо сгенерировать
      */
     void init(int status) {
         if(status == 0) {
@@ -60,49 +78,49 @@ public class User {
     }
 
     /**
-     * /brief Установка сессионных ключей
-     * \param sessionPair_ сессионная пара
+     * @brief Установка сессионных ключей
+     * @param sessionPair_ сессионная пара
      */
     public void setSessionPair_(String[] sessionPair_) {
         this.sessionPair_ = sessionPair_;
     }
 
     /**
-     * \brief Getter для публичного ключа
-     * \return Публичный ключ
+     * @brief Getter для публичного ключа
+     * @return Публичный ключ
      */
     public String getUserPubKeyEncStr() {
         return userPubKeyEncStr;
     }
 
     /**
-     * \brief Getter для приватного ключа
-     * \return Приватный ключ
+     * @brief Getter для приватного ключа
+     * @return Приватный ключ
      */
     public String getUserPrivateKeyEncStr() {
         return userPrivateKeyEncStr;
     }
 
     /**
-     * \brief Setter для публичного ключа
-     * \param userPubKeyEncStr Публичный ключ
+     * @brief Setter для публичного ключа
+     * @param userPubKeyEncStr Публичный ключ
      */
     public void setUserPubKeyEncStr(String userPubKeyEncStr) {
         this.userPubKeyEncStr = userPubKeyEncStr;
     }
 
     /**
-     * \brief Setter для приватного ключа
-     * \param userPrivateKeyEncStr Приватный ключ
+     * @brief Setter для приватного ключа
+     * @param userPrivateKeyEncStr Приватный ключ
      */
     public void setUserPrivateKeyEncStr(String userPrivateKeyEncStr) {
         this.userPrivateKeyEncStr = userPrivateKeyEncStr;
     }
 
     /**
-     * \brief Функкция обрабоки пользователем данных, полученных от администратора
+     * @brief Функкция обрабоки пользователем данных, полученных от администратора
      * Пользователь получает данные администратора, генерирует общий секрет и получаает сессионные ключи
-     * \param result Данные, который пользователь получает от администратора
+     * @param result Данные, который пользователь получает от администратора
      */
     public void EncryptSession(String[] result) {
         try {
@@ -147,9 +165,9 @@ public class User {
     }
 
     /**
-     * \brief Функция Администратора, где обрабатывается публичный клч пользователя и создаются необходимые ключи
-     * \param userPubKeyEncStr Публичный ключ пользователя
-     * \param[out] Результат обрабоки данных пользователя
+     * @brief Функция Администратора, где обрабатывается публичный клч пользователя и создаются необходимые ключи
+     * @param userPubKeyEncStr Публичный ключ пользователя
+     * @return Результат обрабоки данных пользователя
      */
     public String[] DHGenerateAdmin(String userPubKeyEncStr) {
         try {
@@ -203,9 +221,9 @@ public class User {
     // AES methods
 
     /**
-     * \brief Функция шифрования сообщения
-     * \param value Сообщение
-     * \param[out] Зашифрованное сообщение
+     * @brief Функция шифрования сообщения
+     * @param value Сообщение
+     * @result Зашифрованное сообщение
      */
     public String encrypt(String value) {
         try {
@@ -224,9 +242,9 @@ public class User {
     }
 
     /**
-     * \brief Функция расшифровывает сообщения с сервера
-     * \param encrypted Зашифрованное сообщение
-     * \param[out] Расшифрованное сообщение
+     * @brief Функция расшифровывает сообщения с сервера
+     * @param encrypted Зашифрованное сообщение
+     * @result Расшифрованное сообщение
      */
     public String decrypt(String encrypted) {
         try {

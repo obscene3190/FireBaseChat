@@ -40,8 +40,8 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-/**
- *  \brief Activity регистрации и авторизации
+/** @brief Activity регистрации и авторизации пользователей
+ *
  *  Данное Activity предназначено для регистрации или авторизации пользователя, также содержит кнопку перехода на страницу информации об авторах
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -64,12 +64,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button Authors;///< Кнопка авторов
     TextView instructions; ///< Текст-инструкция для пользователя, который проходит регистрацию
 
-    static User current_user; ///< Пользователь
+    static public  User current_user; ///< Пользователь
 
-    DatabaseReference pkeys = FirebaseDatabase.getInstance().getReference("Public_Key"); ///< Базад данных публичных ключей
+    public DatabaseReference pkeys = FirebaseDatabase.getInstance().getReference("Public_Key"); ///< Базад данных публичных ключей
 
     SharedPreferences sPref; ///<  Локальная база данных для хранения ключей пользователя
 
+    /**
+     * @brief Создание activity MainActivity
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -126,9 +130,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * \brief Функция, реализующая авторизацию пользователя по паролю и почте
-     * \param email Данный, который пользователь ввел в поле почты
-     * \param password Данный, который пользователь ввел в поле пароля
+     * @brief Функция, реализующая авторизацию пользователя по паролю и почте
+     * @param email Данный, который пользователь ввел в поле почты
+     * @param password Данный, который пользователь ввел в поле пароля
      */
     public void signin(String email , final String password_) {
         mAuth.signInWithEmailAndPassword(email,password_).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -149,10 +153,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * \brief Функция, реализующая регистрацию пользователя по паролю и почте
+     * @brief Функция, реализующая регистрацию пользователя по паролю и почте
+     *
      * При успешной регистрации для пользователя генерируются ключи, которые после генерации отправляются на сервер
-     * \param email Данный, который пользователь ввел в поле почты
-     * \param password Данный, который пользователь ввел в поле пароля
+     * @param email Данный, который пользователь ввел в поле почты
+     * @param password Данный, который пользователь ввел в поле пароля
      */
     public void registration (String email , String password){
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -169,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * \brief Переотправка ключей для пользователей, у которых нет их на данном устройстве
+     * @brief Переотправка ключей для пользователей, у которых нет их на данном устройстве
      */
     public void keys_generation () {
         current_user = new User();
@@ -185,7 +190,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * \brief Регистрация для администратора
+     * @brief Авторизация для Администратора
+     * @param password
      */
     public void admin_auth(String password) {
         sPref = getSharedPreferences(mAuth.getInstance().getCurrentUser().getUid(), MODE_PRIVATE);
@@ -231,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * \brief Авторизация для пользователей
+     * @brief Авторизация для пользователей
      */
     public void user_auth() {
         sPref = getSharedPreferences(mAuth.getInstance().getCurrentUser().getUid(), MODE_PRIVATE);
@@ -260,7 +266,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private class Key_Thread extends AsyncTask<User, Void, Void> {
+    /**
+     * @brief Поток для обработки генерации ключей
+     */
+    public class Key_Thread extends AsyncTask<User, Void, Void> {
 
         @Override
         protected void onPreExecute() {

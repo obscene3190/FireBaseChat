@@ -50,20 +50,19 @@ import java.security.*;
 import static android.support.v7.widget.RecyclerView.TOUCH_SLOP_DEFAULT;
 
 /**
- * \brief Данное Activity представляет собой комнату обмена зашифрованными сообщениями
+ * @brief Данное Activity представляет собой комнату обмена зашифрованными сообщениями
  */
 public class ChatRoom extends AppCompatActivity  {
-    private static int MAX_MESSAGE_LENGTH = 300; ///< Максимальная длина сообщения
-    private FirebaseListAdapter<Message> adapter; ///< Адаптер для отображения сообщений с сервера
-    //private FirebaseRecyclerAdapter<Message> adapter2;
+    public static int MAX_MESSAGE_LENGTH = 300; ///< Максимальная длина сообщения
+    public FirebaseListAdapter<Message> adapter; ///< Адаптер для отображения сообщений с сервера
 
     static User current_user;
 
     RelativeLayout activity_main;
 
-    DatabaseReference Admen = FirebaseDatabase.getInstance().getReference("Admen"); ///< База данных с обработанными Администратором публичными ключами пользователей
-    DatabaseReference messages = FirebaseDatabase.getInstance().getReference("messages"); ///< База данных с сообщениям пользователей
-    DatabaseReference pkeys = FirebaseDatabase.getInstance().getReference("Public_Key"); ///< Базад данных публичных ключей
+    public DatabaseReference Admen = FirebaseDatabase.getInstance().getReference("Admen"); ///< База данных с обработанными Администратором публичными ключами пользователей
+    public DatabaseReference messages = FirebaseDatabase.getInstance().getReference("messages"); ///< База данных с сообщениям пользователей
+    public DatabaseReference pkeys = FirebaseDatabase.getInstance().getReference("Public_Key"); ///< Базад данных публичных ключей
 
     SharedPreferences sPref; ///<  Локальная база данных для хранения ключей пользователя
 
@@ -73,6 +72,10 @@ public class ChatRoom extends AppCompatActivity  {
 
     String[] sessionPair = new String[2]; ///< Сессионная пара
 
+    /**
+     * Создание activity ChatRoom
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +92,7 @@ public class ChatRoom extends AppCompatActivity  {
         sessionPair[0] = sPref.getString("Key1", "");
         sessionPair[1] = sPref.getString("Key2", "");
 
+        // Проверка на Админитратора
         if(mAuth.getInstance().getCurrentUser().getEmail().equals("starkiller44@yandex.ru")) {
             current_user.setSessionPair_(sessionPair);
             button.setEnabled(true);
@@ -106,6 +110,9 @@ public class ChatRoom extends AppCompatActivity  {
         }
 
         button.setOnClickListener(new View.OnClickListener() {
+            /*
+            Обработка нажатия на кнопку Send
+             */
             @Override
             public void onClick(View view) {
                 String msg = input.getText().toString();
@@ -128,9 +135,10 @@ public class ChatRoom extends AppCompatActivity  {
 
     /**
      * @brief Функция отображения сообщений
+     *
      * Данная функция обращается к базе данных сообщений пользователей и, используя специальный адаптер, отображает их
      */
-    private void displayChat() {
+    public void displayChat() {
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list_of_messages);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
@@ -184,6 +192,10 @@ public class ChatRoom extends AppCompatActivity  {
 
         Toast.makeText(ChatRoom.this, "Ожидайте ответа Администратора", Toast.LENGTH_SHORT).show();
         Admen.child(mAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+            /**
+             * Контроль добавления данных в базу данных
+             * @param dataSnapshot снимок обекта из базы данных
+             */
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String[] result = new String[4];
@@ -221,8 +233,12 @@ public class ChatRoom extends AppCompatActivity  {
     /**
      * @brief Данная функция предназначена для обработки публичных ключей администатором
      */
-    private void Admin_actrivity() {
+    public void Admin_actrivity() {
         pkeys.addChildEventListener(new ChildEventListener() {
+            /**
+             * Слушатель данных из базы данных
+             * @param dataSnapshot снимок обекта из базы данных
+             */
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String userPubKeyEncStr = dataSnapshot.getValue(String.class);
@@ -260,12 +276,23 @@ public class ChatRoom extends AppCompatActivity  {
         });
     }
 
+    /**
+     *
+     * @brief Функция создания кнопки выхода
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
 
+    /**
+     * @brief Обработка нажатия на кнопку выхода
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_signout)

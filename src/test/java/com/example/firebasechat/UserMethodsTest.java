@@ -3,6 +3,7 @@ package com.example.firebasechat;
 import android.util.Base64;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -25,28 +26,36 @@ public class UserMethodsTest {
     public void setSessionPair_() {
         User new_user = new User();
         String[] sessionPair_ = new String[2];
-        sessionPair_[0] = "GzDshr7s34y1BrSL";
-        sessionPair_[1] = "NMHjxlleWpApdxD2";
+        sessionPair_[0] = "BzDshr8s56y1OpSL";
+        sessionPair_[1] = "IhvjxfgeWpUyexD2";
         new_user.setSessionPair_(sessionPair_);
         assertEquals(sessionPair_[0], new_user.sessionPair_[0]);
         assertEquals(sessionPair_[1], new_user.sessionPair_[1]);
     }
 
-    /*
     @Test
-    public void encrypt() {
-        PowerMockito.mockStatic(Base64.class);
-        //when(Base64.encode(argument)).thenReturn("expected result");
-        //when(Base64.decode(argument)).thenReturn("expected result");
-        String msg = "Hello";
-        User new_user = new User();
+    public void KeyExchange() {
+        User Admin;
+        User User;
         String[] sessionPair_ = new String[2];
-        sessionPair_[0] = "GzDshr7s34y1BrSL";
-        sessionPair_[1] = "NMHjxlleWpApdxD2";
-        new_user.setSessionPair_(sessionPair_);
-        String encmsg = new_user.encrypt(msg);
-        encmsg = new_user.decrypt(encmsg);
-        assertEquals(encmsg, msg);
+        sessionPair_[0] = "BzDshr8s56y1OpSL";
+        sessionPair_[1] = "IhvjxfgeWpUyexD2";
+
+        Admin = new User();
+        User = new User();
+        User.init(0);
+
+        Admin.setSessionPair_(sessionPair_);
+
+
+        String pub_key = User.getUserPubKeyEncStr();
+
+        String result[] = Admin.DHGenerateAdmin(pub_key);
+
+        User.EncryptSession(result);
+
+        assertEquals(sessionPair_[0], User.sessionPair_[0]);
+        assertEquals(sessionPair_[1], User.sessionPair_[1]);
     }
-    */
+
 }
