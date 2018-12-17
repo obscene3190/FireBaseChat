@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     static public  User current_user; ///< Пользователь
 
     public DatabaseReference pkeys = FirebaseDatabase.getInstance().getReference("Public_Key"); ///< Базад данных публичных ключей
+    public DatabaseReference Admen = FirebaseDatabase.getInstance().getReference("Admen"); ///< База данных с обработанными Администратором публичными ключами пользователей
 
     SharedPreferences sPref; ///<  Локальная база данных для хранения ключей пользователя
 
@@ -132,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * @brief Функция, реализующая авторизацию пользователя по паролю и почте
      * @param email Данный, который пользователь ввел в поле почты
-     * @param password Данный, который пользователь ввел в поле пароля
+     * @param password_ Данный, который пользователь ввел в поле пароля
      */
     public void signin(String email , final String password_) {
         mAuth.signInWithEmailAndPassword(email,password_).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -246,14 +247,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String privateKey = sPref.getString("Private_Key", "");
 
         if( publicKey.equals("") || privateKey.equals("") ) {
-            Toast.makeText(MainActivity.this, "Aвторизация успешна", Toast.LENGTH_SHORT).show();
             instructions.setVisibility(View.VISIBLE);
             sessionPair[0] = sPref.getString("Key1", "");
             sessionPair[1] = sPref.getString("Key2", "");
             if (sessionPair[0].equals("") || sessionPair[1].equals("")) {
-                instructions.setVisibility(View.VISIBLE);
-                Toast.makeText(MainActivity.this, "На данном устройстве нет ключей, создание...", Toast.LENGTH_SHORT).show();
-                keys_generation();
+                    instructions.setVisibility(View.VISIBLE);
+                    Toast.makeText(MainActivity.this, "На данном устройстве нет ключей, создание...", Toast.LENGTH_SHORT).show();
+                    keys_generation();
             }
             else {
                 Intent intent = new Intent(MainActivity.this, ChatRoom.class);
